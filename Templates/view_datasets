@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Data</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Stored Shopping Data</h2>
+    <table>
+        <thead>
+            <tr>
+                <<th>activity_year</th>    
+                <th>lei derived_msa-md</th> 
+                <th>state_code</th>
+                <th>county_code </th>
+                <th>census_tract    </th>
+                <th>conforming_loan_limit</th>  
+                <th>derived_loan_product_type</th>
+                <th>derived_dwelling_category   </th>
+                <th>derived_ethnicity   </th>
+                <th>derived_race</th>
+                <th>derived_sex action_taken</th>   
+                <th>purchaser_type  </th>
+                <th>preapproval loan_type</th>  
+                <th>loan_purpose    </th>
+                <th>lien_status reverse_mortgage</th>   
+                <th>open-end_line_of_credit business_or_commercial_purpose</th> 
+                <th>loan_amount loan_to_value_ratio interest_rate   </th>
+                <th>rate_spread hoepa_status    </th>
+                <th>total_loan_costs    </th>
+                <th>total_points_and_fees   </th>
+                <th>origination_charges </th>
+                <th>discount_points </th>
+                <th>lender_credits  </th>
+                <th>loan_term</th>
+                <th>prepayment_penalty_term intro_rate_period</th>  
+                <th>negative_amortization   </th>
+                <th>interest_only_payment   </th>
+                <th>balloon_payment </th>
+                <th>other_nonamortizing_features</th>   
+                <th>property_value  </th>
+                <th>construction_method occupancy_type</th> 
+                <th>manufactured_home_secured_property_type manufactured_home_land_property_interest</th>   
+                <th>total_units multifamily_affordable_units    </th>
+                <th>income  debt_to_income_ratio    </th>
+                <th>applicant_credit_score_type</th>
+                <th>co-applicant_credit_score_type  </th>
+                <th>applicant_ethnicity-1   </th>
+                <th>applicant_ethnicity-2   </th>
+                <th>applicant_ethnicity-3   </th>
+                <th>applicant_ethnicity-4</th>
+                <th>applicant_ethnicity-5   </th>   
+                <th>co-applicant_ethnicity-1    </th>
+                <th>co-applicant_ethnicity-2    </th>
+                <th>co-applicant_ethnicity-3    </th>
+                <th>co-applicant_ethnicity-4    </th>
+                <th>co-applicant_ethnicity-5    </th>
+                <th>applicant_ethnicity_observed</th>
+                <th>co-applicant_ethnicity_observed</th>
+                <th>applicant_race-1    </th>
+                <th>applicant_race-2    </th>
+                <th>applicant_race-3    </th>
+                <th>applicant_race-4    </th>
+                <th>applicant_race-5</th>
+                <th>co-applicant_race-1 </th>
+                <th>co-applicant_race-2 </th>
+                <th>co-applicant_race-3 </th>
+                <th>co-applicant_race-4 </th>
+                <th>co-applicant_race-5 </th>
+                <th>applicant_race_observed </th>
+                <th>co-applicant_race_observed  </th>
+                <th>applicant_sex   </th>
+                <th>co-applicant_sex    </th>
+                <th>applicant_sex_observed  </th>
+                <th>co-applicant_sex_observed   </th>
+                <th>applicant_age   </th>
+                <th>co-applicant_age    </th>
+                <th>applicant_age_above_62  </th>
+                <th>co-applicant_age_above_62   </th>
+                <th>submission_of_application   </th>
+                <th>initially_payable_to_institution</th>   
+                <th>aus-1   </th>
+                <th>aus-2   </th>
+                <th>aus-3   </th>
+                <th>aus-4   </th>
+                <th>aus-5   </th>
+                <th>denial_reason-1</th>    
+                <th>denial_reason-2</th>    
+                <th>denial_reason-3 </th>
+                <th>denial_reason-4 </th>
+                <th>tract_population    </th>
+                <th>tract_minority_population_percent</th>  
+                <th>ffiec_msa_md_median_family_income   </th>
+                <th>tract_to_msa_income_percentage  </th>
+                <th>tract_owner_occupied_units  </th>
+                <th>tract_one_to_four_family_homes</th>
+                <th>tract_median_age_of_housing_units</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+                <td>{{ item['activity_year'] }}</td>
+                <td>{{ item['lei'] }}</td>
+                <td>{{ item['derived_msa-md'] }}</td>
+                <td>{{ item['state_code'] }}</td>
+                <td>{{ item['county_code'] }}</td>
+                <td>{{ item['census_tract'] }}</td>
+                <td>{{ item['conforming_loan_limit'] }}</td>
+                <td>{{ item['derived_loan_product_type'] }}</td>
+                <td>{{ item['derived_dwelling_category'] }}</td>
+                <td>{{ item['derived_ethnicity'] }}</td>
+                <td>{{ item['derived_race'] }}</td>
+                <td>{{ item['derived_sex'] }}</td>
+                <td>{{ item['action_taken'] }}</td>
+                <td>{{ item['purchaser_type'] }}</td>
+                <td>{{ item['preapproval'] }}</td>
+                <td>{{ item['loan_type'] }}</td>
+                <td>{{ item['loan_purpose'] }}</td>
+                <td>{{ item['lien_status'] }}</td>
+                <td>{{ item['reverse_mortgage'] }}</td>
+                <td>{{ item['open-end_line_of_credit'] }}</td>
+                <td>{{ item['business_or_commercial_purpose'] }}</td>
+                <td>{{ item['loan_amount'] }}</td>
+                <td>{{ item['loan_to_value_ratio'] }}</td>
+                <td>{{ item['interest_rate'] }}</td>
+                <td>{{ item['rate_spread'] }}</td>
+                <td>{{ item['hoepa_status'] }}</td>
+                <td>{{ item['total_loan_costs'] }}</td>
+                <td>{{ item['total_points_and_fees'] }}</td>
+                <td>{{ item['origination_charges'] }}</td>
+                <td>{{ item['discount_points'] }}</td>
+                <td>{{ item['lender_credits'] }}</td>
+                <td>{{ item['loan_term'] }}</td>
+                <td>{{ item['prepayment_penalty_term'] }}</td>
+                <td>{{ item['intro_rate_period'] }}</td>
+                <td>{{ item['negative_amortization'] }}</td>
+                <td>{{ item['interest_only_payment'] }}</td>
+                <td>{{ item['balloon_payment'] }}</td>
+                <td>{{ item['other_nonamortizing_features'] }}</td>
+                <td>{{ item['property_value'] }}</td>
+                <td>{{ item['construction_method'] }}</td>
+                <td>{{ item['occupancy_type'] }}</td>
+                <td>{{ item['manufactured_home_secured_property_type'] }}</td>
+                <td>{{ item['manufactured_home_land_property_interest'] }}</td>
+                <td>{{ item['total_units'] }}</td>
+                <td>{{ item['multifamily_affordable_units'] }}</td>
+                <td>{{ item['income'] }}</td>
+                <td>{{ item['debt_to_income_ratio'] }}</td>
+                <td>{{ item['applicant_credit_score_type'] }}</td>
+                <td>{{ item['co-applicant_credit_score_type'] }}</td>
+                <td>{{ item['applicant_ethnicity-1'] }}</td>
+                <td>{{ item['applicant_ethnicity-2'] }}</td>
+                <td>{{ item['applicant_ethnicity-3'] }}</td>
+                <td>{{ item['applicant_ethnicity-4'] }}</td>
+                <td>{{ item['applicant_ethnicity-5'] }}</td>
+                <td>{{ item['co-applicant_ethnicity-1'] }}</td>
+                <td>{{ item['co-applicant_ethnicity-2'] }}</td>
+                <td>{{ item['co-applicant_ethnicity-3'] }}</td>
+                <td>{{ item['co-applicant_ethnicity-4'] }}</td>
+                <td>{{ item['co-applicant_ethnicity-5'] }}</td>
+                <td>{{ item['applicant_ethnicity_observed'] }}</td>
+                <td>{{ item['co-applicant_ethnicity_observed'] }}</td>
+                <td>{{ item['applicant_race-1'] }}</td>
+                <td>{{ item['applicant_race-2'] }}</td>
+                <td>{{ item['applicant_race-3'] }}</td>
+                <td>{{ item['applicant_race-4'] }}</td>
+                <td>{{ item['applicant_race-5'] }}</td>
+                <td>{{ item['co-applicant_race-1'] }}</td>
+                <td>{{ item['co-applicant_race-2'] }}</td>
+                <td>{{ item['co-applicant_race-3'] }}</td>
+                <td>{{ item['co-applicant_race-4'] }}</td>
+                <td>{{ item['co-applicant_race-5'] }}</td>
+                <td>{{ item['applicant_race_observed'] }}</td>
+                <td>{{ item['co-applicant_race_observed'] }}</td>
+                <td>{{ item['applicant_sex'] }}</td>
+                <td>{{ item['co-applicant_sex'] }}</td>
+                <td>{{ item['applicant_sex_observed'] }}</td>
+                <td>{{ item['co-applicant_sex_observed'] }}</td>
+                <td>{{ item['applicant_age'] }}</td>
+                <td>{{ item['co-applicant_age'] }}</td>
+                <td>{{ item['applicant_age_above_62'] }}</td>
+                <td>{{ item['co-applicant_age_above_62'] }}</td>
+                <td>{{ item['submission_of_application'] }}</td>
+                <td>{{ item['initially_payable_to_institution'] }}</td>
+                <td>{{ item['aus-1'] }}</td>
+                <td>{{ item['aus-2'] }}</td>
+                <td>{{ item['aus-3'] }}</td>
+                <td>{{ item['aus-4'] }}</td>
+                <td>{{ item['aus-5'] }}</td>
+                <td>{{ item['denial_reason-1'] }}</td>
+                <td>{{ item['denial_reason-2'] }}</td>
+                <td>{{ item['denial_reason-3'] }}</td>
+                <td>{{ item['denial_reason-4'] }}</td>
+                <td>{{ item['tract_population'] }}</td>
+                <td>{{ item['tract_minority_population_percent'] }}</td>
+                <td>{{ item['ffiec_msa_md_median_family_income'] }}</td>
+                <td>{{ item['tract_to_msa_income_percentage'] }}</td>
+                <td>{{ item['tract_owner_occupied_units'] }}</td>
+                <td>{{ item['tract_one_to_four_family_homes'] }}</td>
+                tract_median_age_of_housing_units'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="/upload">Upload Another CSV</a>
+</body>
+</html>
