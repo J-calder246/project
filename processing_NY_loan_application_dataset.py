@@ -4,6 +4,7 @@ import numpy as np
 
 
 
+
 df = pd.read_csv("raw_datasets/NY_loan_application_datasets.csv", low_memory=False)
 
 
@@ -87,6 +88,9 @@ df = pd.get_dummies(df, columns=["derived_sex"])
 
 #setting "exempt" value to NAN 
 df = df.replace("Exempt", np.nan)
+
+
+
 
 
 #Upload dataset

@@ -6,22 +6,33 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.linear_model import LogisticRegression
-
+from sklearn.impute import SimpleImputer
 
 
 
 #Preparing a logistic regression classification model
 
 df1 = pd.read_csv("/workspaces/project/processed_datasets/NY2024.csv")
-print(df1.shape)
-df1 = df1.dropna() # Drop rows with missing values
 
-print(df1.head())
+#Imputing missing values (change later if this is not suitable)
+
+
+
+
+
+
 print(df1.shape)
 X = df1.drop(columns=['action_taken'])
 y = df1['action_taken']
 
-X_train, X_test, y_train, y_test = train_test_split(df1.drop("action_taken", axis=1), df1["action_taken"], test_size=0.2, random_state=42)    
+imputer = SimpleImputer(strategy="median")
+X = imputer.fit_transform(X)
+
+
+
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)    
 
 
 #standardising features with scaler (gives attributes equal weighting and influence)
