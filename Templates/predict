@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Test Mortgage Application</h1>
+
+<form method="POST">
+    <label>Applicant Income</label>
+    <input type="number" name="income" required>
+
+    <label>Loan Amount</label>
+    <input type="number" name="loan_amount" required>
+
+    <label>Debt-to-Income Ratio</label>
+    <input type="text" name="debt_to_income_ratio" required>
+
+    <label>Applicant Race</label>
+    <select name="race">
+        <option value="1">White</option>
+        <option value="2">Black or African American</option>
+        <option value="3">Asian</option>
+        <option value="4">Other</option>
+    </select>
+
+    <label>Applicant Sex</label>
+    <select name="sex">
+        <option value="1">Male</option>
+        <option value="2">Female</option>
+    </select>
+
+    <button type="submit">Predict</button>
+</form>
+
+{% if prediction %}
+<div class="result">
+    <h2>Prediction Result</h2>
+    <p>{{ prediction }}</p>
+</div>
+{% endif %}
+{% endblock %}

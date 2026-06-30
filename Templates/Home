@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Mortgage Approval Model Demonstration</h1>
+
+<p>
+    This website demonstrates machine learning models used to predict
+    mortgage application outcomes and evaluate fairness across demographic groups.
+</p>
+
+<div class="cards">
+    <div class="card">
+        <h3>View Models</h3>
+        <p>Compare accuracy, precision, recall and model performance.</p>
+        <a href="/models">Open Models</a>
+    </div>
+
+    <div class="card">
+        <h3>Fairness Metrics</h3>
+        <p>View statistical parity, disparate impact, equal opportunity and equalised odds.</p>
+        <a href="/fairness">Open Fairness Results</a>
+    </div>
+
+    <div class="card">
+        <h3>Test Application</h3>
+        <p>Enter a sample mortgage application and view the predicted result.</p>
+        <a href="/predict">Try Prediction</a>
+    </div>
+</div>
+{% endblock %}

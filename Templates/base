@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mortgage Fairness Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav>
+    <h2>Mortgage Fairness Dashboard</h2>
+    <a href="/">Home</a>
+    <a href="/models">Models</a>
+    <a href="/fairness">Fairness Results</a>
+    <a href="/predict">Test Application</a>
+</nav>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>

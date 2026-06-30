@@ -7,7 +7,6 @@ app.secret_key = 'your_secret_key'
 
 """
 UPLOAD DATASETS
-"""
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
@@ -19,3 +18,10 @@ def upload():
             collection.insert_many(records)
             flash ("Data successfully uploaded", "success")
             return redirect('view')
+
+"""
+
+@app.route("/")
+def home():
+    return render_template("home.html")
+

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Model Performance</h1>
+
+<table>
+    <tr>
+        <th>Model</th>
+        <th>Accuracy</th>
+        <th>Precision</th>
+        <th>Recall</th>
+        <th>F1 Score</th>
+    </tr>
+
+    {% for model in models %}
+    <tr>
+        <td>{{ model.name }}</td>
+        <td>{{ model.accuracy }}</td>
+        <td>{{ model.precision }}</td>
+        <td>{{ model.recall }}</td>
+        <td>{{ model.f1 }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
