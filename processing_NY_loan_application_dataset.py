@@ -5,7 +5,7 @@ import numpy as np
 
 
 
-df = pd.read_csv("raw_datasets/NY_loan_application_datasets.csv", low_memory=False)
+df = pd.read_csv("raw_datasets/state_NY 2019 (1).csv", low_memory=False)
 
 
 print(df.columns.tolist())
@@ -89,7 +89,7 @@ df = pd.get_dummies(df, columns=["derived_sex"])
 #setting "exempt" value to NAN 
 df = df.replace("Exempt", np.nan)
 
-
+print(df.head())
 
 
 
@@ -98,5 +98,5 @@ df = df.replace("Exempt", np.nan)
 directory = "processed_datasets" 
 os.makedirs(directory, exist_ok=True)
 
-output_file_path = os.path.join(directory, "NY2024.csv")
+output_file_path = os.path.join(directory, "NY2019.csv")
 df.to_csv(output_file_path, index=False)
