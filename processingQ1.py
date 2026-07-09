@@ -65,6 +65,7 @@ HLTV refinance option indicator
 """
 
 Columns_to_keep = [
+    "loan id",
     "original interest rate",
     "original UPB",
     "original loan term",
@@ -78,10 +79,68 @@ df = df[Columns_to_keep]
 
 print (df.head())
 
+print(df.columns.tolist())
+
+print(df["Current Loan Delinquency Status"].value_counts(dropna=False))
 #Delinquency has monthly values for each case, for this, i need to ddivide the dataset into those who are delinquent and those who arent
 
 directory = "processed_datasets" 
 os.makedirs(directory, exist_ok=True)
 
 output_file_path = os.path.join(directory, "NY2019.csv")
+df.to_csv(output_file_path, index=False)
+
+
+df = pd.read_csv("processed_datasets/NY2019.csv")
+
+#delting XX values for delinquency
+
+df = df[df["Current Loan Delinquency Status"] != "XX"].copy()
+
+#Convert string numbers into numeric values for delinquency so different people can be compared
+
+df["Current Loan Delinquency Status"] = pd.to_numeric(df["Current Loan Delinquency Status"], errors="coerce")
+
+#Getting maximum delinquecy for each case, so I can set up a way of classifying deliquency 
+
+print(df.shape)
+
+Months_delinquent = (df.groupby("loan id")["Current Loan Delinquency Status"].max())
+
+#Keep 1 row of information for each case
+loan__features = (df.groupby("loan id")
+                  .first()
+                  .reset_index())
+
+
+#Change delinquency columns to the maximum value
+
+loan_features = loan__features.drop(columns=["Current Loan Delinquency Status"])  #drops original delinquency cols
+
+loan_features = loan_features.merge(
+    Months_delinquent, on="loan id"
+)
+
+print(df.head())
+
+print(df["Current Loan Delinquency Status"].value_counts(dropna=False))
+
+#Creating simple target for delinquency (>0 = deinquenct)
+
+loan_features["delinquent"] = (loan_features["Current Loan Delinquency Status"] > 0).astype(str)
+
+print(loan_features["delinquent"].value_counts())
+
+"""
+delinquent
+False    8488
+True     2171
+"""
+df = loan_features.copy()
+
+
+directory = "processed_datasets" 
+os.makedirs(directory, exist_ok=True)
+
+output_file_path = os.path.join(directory, "SingleValue_NY2019.csv")
 df.to_csv(output_file_path, index=False)
