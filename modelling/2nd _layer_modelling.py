@@ -1,12 +1,17 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from modelling import approved_applications, logreg, scaler, model_approval
+from modelling import approved_applications, logreg,  model_approval
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.linear_model import LogisticRegression
-from FannieMae_modelling import model_FM
 import os
+import joblib 
+
+
+model_LR = joblib.load("models/FMlogistic.pkl")
+scaler = joblib.load("models/FMscaler.pkl")
+
 
 print(approved_applications.head())
 
@@ -62,30 +67,41 @@ X = df[['loan_amount', 'debt_to_income_ratio', 'loan_to_value_ratio', 'loan_term
 print(X.head())
 
 
-"""
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)    
+#Changing column names to match fannie mae dataset
+Column_names = [
+    "original UPB",  #represent original unpaid balance (i.e. loan amount)
+    "debt to income",
+    "original LTV ratio", #loan to value
+    "original loan term",
+    "original interest rate",
+]
+
+X = X.rename(columns=dict(zip(X.columns, Column_names)))
+
+X = X.dropna()
+
+print(X.head())
 
 
-#standardising features with scaler (gives attributes equal weighting and influence)
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+#Ensuring features are scaled in the correct order
+expected_features = list(scaler.feature_names_in_)
+X = X[expected_features].copy()
+
+print(X.head())
 
 
+X_scaled = scaler.transform(X)
 
+predictions = model_LR.predict(X_scaled)
 
+probablility = model_LR.predict_proba(X_scaled)[:, 1]   #probability of delinquency
+print(predictions
+      )
+print(probablility)
 
-#initialising model
+# Note accuracy score and classification report cannot be achieved as we don't know if these applicants become delinquent or not, therefore we must go off of certainty.
 
+print(f"Average probability: {probablility.mean():.2f}")
 
-
-#training
-logreg.fit(X_train_scaled, y_train)
-
-y_pred = logreg.predict(X_test_scaled)
-
-accuracy = accuracy_score(y_test, y_pred)
-print(f"Accuracy: {accuracy:.2f}")
-
-"""
+#False = won't be delinquent, True = will be
