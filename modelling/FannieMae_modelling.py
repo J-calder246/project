@@ -27,7 +27,7 @@ df = df.dropna()
 
 print(df.head())
 
-X = df.drop(columns=['Current Loan Delinquency Status', 'delinquent'])  #list price dropped due to missing values (ammend later if possible)
+X = df.drop(columns=['loan id', 'Current Loan Delinquency Status', 'delinquent'])  #list price dropped due to missing values (ammend later if possible)
 y = df['delinquent']
 
 
@@ -82,5 +82,7 @@ ratio -   4:1 (false-true)
 
 
 joblib.dump(logreg, "models/FMlogistic.pkl")
+joblib.dump(scaler, "models/FMscaler.pkl")
+
 
 model_FM = joblib.load("models/FMlogistic.pkl")
