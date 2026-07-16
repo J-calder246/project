@@ -1,13 +1,13 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sna
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.linear_model import LogisticRegression
 from sklearn.impute import SimpleImputer
 import joblib
+from sklearn.ensemble import RandomForestClassifier
 
 
 
@@ -15,14 +15,19 @@ import joblib
 
 df1 = pd.read_csv("processed_datasets/NY2019.csv")
 
-
+"""
+Original based on action taken
+print(df1.shape)
+X = df1.drop(columns=['action_taken'])
+y = df1['action_taken']
+"""
 
 
 
 
 print(df1.shape)
-X = df1.drop(columns=['action_taken'])
-y = df1['action_taken']
+X = df1.drop(columns=['action_taken', 'approved'])
+y = df1['approved']
 
 
 
@@ -94,3 +99,31 @@ model_approval = joblib.load("models/logistic.pkl")
 Predicted_df = pd.read_csv("/workspaces/project/processed_datasets/NY2019.csv")
 
 #prediction = model_approval.predict(Predicted_df.drop(columns=['action_taken']))
+
+
+"""
+___________________________________________________________
+Now attempting Random Forest classification on dataset
+___________________________________________________________
+
+"""
+
+
+X_train_RF, X_test_RF, y_train_RF, y_test_RF = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)    
+
+X_train_scaled_RF = scaler.fit_transform(X_train_RF)
+X_test_scaled_RF = scaler.transform(X_test_RF)
+
+Model_RF = RandomForestClassifier(class_weight="balanced", random_state=42)
+
+Model_RF.fit(X_train_scaled_RF, y_train_RF)
+
+y_pred_RF = Model_RF.predict(X_test_scaled_RF)
+
+accuracy = accuracy_score(y_test_RF, y_pred_RF)
+
+print(f"accuracy: {accuracy:.4f}")
+
+joblib.dump(Model_RF, "models/Applications_RF.pkl")
+
+model_approval_RF = joblib.load("models/Applications_RF.pkl")
