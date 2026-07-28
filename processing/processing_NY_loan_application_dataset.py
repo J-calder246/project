@@ -38,7 +38,7 @@ columns_to_keep = [
     "derived_sex",
     "applicant_age",
     "negative_amortization",
-    "rate_spread",
+    "rate_spread",   #difference between APR and APOR
 ]
 
 df = df[columns_to_keep]
@@ -69,7 +69,7 @@ debt_to_income_mode = {
     
 
 }
-
+"""
 age_mode = {
     "<25": 23,
     "25-34": 30,
@@ -80,16 +80,52 @@ age_mode = {
     ">74": 80,
     "8888": np.nan,
 }
-
+"""
 df["debt_to_income_ratio"] = df["debt_to_income_ratio"].map(debt_to_income_mode)
 
-df["applicant_age"] = df["applicant_age"].map(age_mode)
-
+#df["applicant_age"] = df["applicant_age"].map(age_mode)
 
 """
 Note: saving a dataset now before I start converting race and gender etc into dummy values. 
 This is important for easy interpretation in the evaluation stage.
 """
+
+#Removing unclear values from dataset
+
+race_cols_to_keep = [
+    '2 or more minority races',
+    'American Indian or Alaska Native',
+    'Asian',
+    'Black or African American',
+    'Joint',
+    'Native Hawaiian or Other Pacific Islander',
+    'White'  
+
+]
+
+Age_cols_to_keep = [
+    '35-44',
+    '45-54',
+    '55-64',
+    '65-74',
+    '>74',
+    '<25'
+
+]
+
+Gender_cols_to_keep = [
+    'Joint',
+    'Male',
+    'Female'
+
+]
+
+#Getting columns with the features I want to keep
+df = df[df['derived_race'].isin(race_cols_to_keep)].copy()
+df = df[df['applicant_age'].isin(Age_cols_to_keep)].copy()
+df = df[df['derived_sex'].isin(Gender_cols_to_keep)].copy()
+
+print(df.value_counts('derived_race'))
 
 df_no_dummies = df
 
@@ -97,17 +133,30 @@ directory = "processed_datasets"
 os.makedirs(directory, exist_ok=True)
 
 output_file_path = os.path.join(directory, "NY2019_no_dummies.csv")
-df_no_dummies.to_csv(output_file_path, index=False)
+df_no_dummies.to_csv(output_file_path, index=False)  #getting a csv with no dummies for evaluation later on
 
-#getting dummy values for race, gender etc
-df = pd.get_dummies(df, columns=["derived_race"])
-df = pd.get_dummies(df, columns=["derived_sex"])
+#getting dummy values for race, gender etc while keeping the original values for evaluation later on
+cols_to_process = ["derived_race", "derived_sex", "loan_type", "loan_purpose", "negative_amortization", "applicant_age", "occupancy_type"]
+
+dummies = pd.get_dummies(df, columns = cols_to_process,  drop_first=False)  
+
+df = pd.concat([df, dummies], axis= 1)
+
+"""
+Other items to drop/get dummies for
+
+loan_type, amorization, loan purpose, occupancy type and age (revert age back to original ranges)
+"""
+
+
+print(df.columns.to_list())
 
 #setting "exempt" value to NAN 
 df = df.replace("Exempt", np.nan)
 
 print(df.head())
 
+print(df.columns[df.columns.str.endswith(".1")])
 
 
 #Upload dataset
@@ -118,4 +167,3 @@ os.makedirs(directory, exist_ok=True)
 output_file_path = os.path.join(directory, "NY2019.csv")
 df.to_csv(output_file_path, index=False)
 
-print(df["approved"].value_counts(dropna=False))
