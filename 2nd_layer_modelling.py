@@ -28,6 +28,9 @@ model_LR_1st = joblib.load("models/logistic.pkl")
 
 df = pd.read_csv("processed_datasets/NY2019.csv")
 
+print("df head")
+print(df.head)
+
 X = df.drop(columns=["approved", "action_taken", "derived_race", "derived_sex", "loan_type", "loan_purpose", "negative_amortization", "applicant_age", "occupancy_type", 'loan_type.1', 'approved.1', 'action_taken.1', 'loan_amount.1',
        'income.1', 'debt_to_income_ratio.1', 'loan_to_value_ratio.1',
        'interest_rate.1', 'property_value.1', 'loan_term.1', 'rate_spread.1',
@@ -73,7 +76,10 @@ df["probability_of_approval"] = (probability)
 
 print(df.columns.tolist())
 
-approved_applications = df
+approved_applications = df[df["approved"].isin([True])]   #keeps rows that were approved for next layer of modelling
+
+print("approved applications")
+print(approved_applications.head)
 
 print(approved_applications.head())
 

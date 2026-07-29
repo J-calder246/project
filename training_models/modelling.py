@@ -151,3 +151,10 @@ os.makedirs(directory, exist_ok=True)
 
 output_file_path = os.path.join(directory, "approved_application_1st_model_LR.csv")
 approved_applications.to_csv(output_file_path, index=False)
+
+
+directory = "modelled_datasets" 
+os.makedirs(directory, exist_ok=True)
+
+output_file_path = os.path.join(directory, "LR_test_data.csv")
+positive_predictions.to_csv(output_file_path, index=False)
