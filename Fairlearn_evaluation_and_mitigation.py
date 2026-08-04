@@ -7,7 +7,7 @@ This module evlauate the bias propensity of the first model (model focussing on 
 
 import pandas as pd
 """evaluation packages""" 
-from fairlearn.metrics import MetricFrame, count, equalized_odds_difference, equalized_odds_ratio,  false_negative_rate, false_positive_rate, selection_rate
+from fairlearn.metrics import MetricFrame, count, equalized_odds_difference, equalized_odds_ratio,  false_negative_rate, false_positive_rate, selection_rate,true_positive_rate
 from training_models.modelling import y_pred, y_test 
 from sklearn.metrics import accuracy_score  #accuracy score for original model
 
@@ -16,13 +16,15 @@ df = pd.read_csv("modelled_datasets/LR_test_data.csv")
 
 #Setting up 'MetricFrame'  https://fairlearn.org/main/api_reference/generated/fairlearn.metrics.MetricFrame.html 
 
-metrics_dict = {"accuracy":selection_rate, "selection rate": accuracy_score, "count": count}
+metrics_dict = {"accuracy":selection_rate, "selection rate": accuracy_score, "count": count, "true_positive_rate": true_positive_rate}
 
 
 """
 Fairness metrics for gender
 """
 
+
+#file imports dataset with data for the true value, predicted value and the evaulation values (gender age race) for those predictions
 y_true=df["approved"]  , #original approval values
 y_pred=df["y_pred"],   #models prediction of approval
 sensitive_features_gender=df["derived_sex"]
@@ -170,7 +172,7 @@ Adversarial fairness classifier
 
 
 """
-from fairlearn.reductions import ExponentiatedGradient, DemographicParity
+from fairlearn.reductions import ExponentiatedGradient, DemographicParity  #exponentiated gradient is an inprocessing technique
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report

@@ -43,6 +43,8 @@ columns_to_keep = [
 
 df = df[columns_to_keep]
 
+print(df.dtypes.tolist())
+
 #converting ranges into a single number for DTI and age
 
 debt_to_income_mode = {

@@ -17,7 +17,7 @@ class Config:
     )
     
     MONGO_DB = "Mortgage_datasets"
-    MONGO_STROKE_COLLECTION = "Mortgage_data"
+    INPUT_COLLECTION = "Mortgage_data"
     
 
 
