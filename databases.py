@@ -1,6 +1,15 @@
 from config import Config
 from pymongo import MongoClient
 
-client = MongoClient(Config.MONGO_URI)
-mdb = client[Config.MONGO_DB]
-input_collection = mdb[Config.INPUT_COLLECTION]
+
+_client = MongoClient(Config.MONGO_URI)
+_mdb = _client[Config.MONGO_DB]
+input_collection = _mdb[Config.INPUT_COLLECTION]
+
+
+#testing
+_client.admin.command("ping")
+print("MongoDB connection successful")
+
+result = input_collection.insert_one({"test": "working"})
+print("Inserted ID:", result.inserted_id)

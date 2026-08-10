@@ -1,18 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Add New Patient</h2>
-<form method="POST" action="{{ url_for('add_record') }}">   
+<h2>Add New Application</h2>
+<form method="POST" action="{{ url_for('input_data_post') }}">   
     <p>ID</p><input type="text" name="id" id="id">   
-    <p>Gender</p><input type="text" name="gender" id="gender">
-    <p>Hypertension</p><input type="number" name="hypertension" id="hypertension">
-    <p>Heart Disease</p><input type="number" name="heart_disease" id="heart_disease">
-    <p>Ever married</p><input type="text" name="ever_married" id="ever_married" required>
-    <p>Work type</p><input type="text" name="work_type" id="work_type">
-    <p>Residence Type</p><input type="text" name="Residence_type" id="Residence_type" required>
-    <p>Average Glucose Level</p><input type="text" name="avg_glucose_level" id="avg_glucose_level" min="0">
-    <p>BMI</p><input type="text" name="bmi" id="bmi" min="0">
-    <p>Smoking status</p><input type="text" name="smoking_status" id="smoking_status" min="0">
-    <p>Stroke</p><input type="number" name="stroke" id="stroke" min="0">
+    <p>Loan Type</p><input type="text" name="loan_type" id="loan_type">
+    <p>Loan Amount</p><input type="number" name="loan_amount" id="loan_amount">
+    <p>Income</p><input type="number" name="income" id="income">
+    <p>Debt-to-Income Ratio</p><input type="number" name="debt_to_income_ratio" id="debt_to_income_ratio">
+    <p>Loan-to-Value Ratio</p><input type="number" name="loan_to_value_ratio" id="loan_to_value_ratio">
+    <p>Interest Rate</p><input type="number" name="interest_rate" id="interest_rate">
+    <p>Property Value</p><input type="number" name="property_value" id="property_value">
+    <p>Loan Term</p><input type="number" name="loan_term" id="loan_term">
+    <p>loan_purpose</p><input type="text" name="loan_purpose" id="loan_purpose" min="0">
+    <p>Occupancy Type</p><input type="number" name="occupancy_type" id="occupancy_type" min="0">
+    <p>Race</p><input type="text" name="derived_race" id="derived_race">
+    <p>Gender</p>label for="derived_sex">What is the gender:</label>
+    <select name="derived_sex" id="derived_sex">
+        <option value="Joint">Joint</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+    
+    </select>
+    <p>Age Group</p>label for="applicant_age">Which age group do they lie in</label>
+    <select name="applicant_age" id="applicant_age">
+        <option value="Joint">Joint</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+    
+    </select>
+    <p>Negative Amortization</p><input type="text" name="negative_amortization" id="negative_amortization" min="0">
+    <p>Rate Spread</p><input type="text" name="rate_spread" id="rate_spread" min="0">
+
     <br><br>
     <input class="button" type="submit" value="Create">
 </form>

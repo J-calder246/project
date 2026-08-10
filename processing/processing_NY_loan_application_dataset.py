@@ -2,11 +2,12 @@ import pandas as pd
 import os
 import numpy as np
 from pandas import DataFrame
-
-
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer
 
 
 df = pd.read_csv("raw_datasets/state_NY 2019 (1).csv", low_memory=False)
+
 
 
 print(df.columns.tolist())
@@ -31,7 +32,6 @@ columns_to_keep = [
     "interest_rate",
     "property_value",
     "loan_term",
-    "loan_type",
     "loan_purpose",
     "occupancy_type",
     "derived_race",
@@ -43,7 +43,13 @@ columns_to_keep = [
 
 df = df[columns_to_keep]
 
-print(df.dtypes.tolist())
+print(df.dtypes)
+
+directory = "processed_datasets" 
+os.makedirs(directory, exist_ok=True)
+
+output_file_path = os.path.join(directory, "reducedcols.csv")
+df.to_csv(output_file_path, index=False)
 
 #converting ranges into a single number for DTI and age
 
@@ -138,9 +144,20 @@ output_file_path = os.path.join(directory, "NY2019_no_dummies.csv")
 df_no_dummies.to_csv(output_file_path, index=False)  #getting a csv with no dummies for evaluation later on
 
 #getting dummy values for race, gender etc while keeping the original values for evaluation later on
-cols_to_process = ["derived_race", "derived_sex", "loan_type", "loan_purpose", "negative_amortization", "applicant_age", "occupancy_type"]
+cols_to_process = ["derived_race", "derived_sex", "loan_type", "loan_purpose", "negative_amortization",
+                    "applicant_age", "occupancy_type", ]
 
-dummies = pd.get_dummies(df, columns = cols_to_process,  drop_first=False)  
+dummies = pd.DataFrame(pd.get_dummies(df, columns = cols_to_process,  drop_first=False)  )
+
+
+print("dummy cols")
+print(dummies.columns.to_list())
+
+dummies = dummies.drop(columns=['approved', 'action_taken', 'loan_amount', 'income', 
+                                'debt_to_income_ratio', 'loan_to_value_ratio', 'interest_rate', 
+                                'property_value', 'loan_term', 'rate_spread'])
+
+print(dummies.columns.to_list())
 
 df = pd.concat([df, dummies], axis= 1)
 
@@ -159,6 +176,18 @@ df = df.replace("Exempt", np.nan)
 print(df.head())
 
 print(df.columns[df.columns.str.endswith(".1")])
+
+#Imputing missing values with iterative imputer (a multivariate imputer) 
+# This means that missing values will be estimated and will be unique rather than one uniform value that can interfere with models
+
+print(df.isnull().sum)
+
+"""
+
+iterative_imputer = IterativeImputer(max_iter=20, random_state=42)
+df = iterative_imputer.fit_transform(df)
+
+"""
 
 
 #Upload dataset

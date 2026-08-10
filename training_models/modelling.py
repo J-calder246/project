@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -17,6 +16,8 @@ from fairlearn.metrics import MetricFrame, count, equalized_odds_difference, equ
 
 df1 = pd.read_csv("processed_datasets/NY2019.csv")
 
+print(df1.isnull().sum())
+
 print(df1.columns.to_list())
 
 #produces duplicate columns that end with .1
@@ -27,10 +28,13 @@ print(df1.columns[df1.columns.str.endswith(".1")])
 
 #duplicate columns removed from X, if possible find a better solution later
 print(df1.shape)
-X = df1.drop(columns=["approved", "action_taken", "derived_race", "derived_sex", "loan_type", "loan_purpose", "negative_amortization", "applicant_age", "occupancy_type", 'loan_type.1', 'approved.1', 'action_taken.1', 'loan_amount.1',
-       'income.1', 'debt_to_income_ratio.1', 'loan_to_value_ratio.1',
-       'interest_rate.1', 'property_value.1', 'loan_term.1', 'rate_spread.1',
-       'loan_type_1.1', 'loan_type_2.1', 'loan_type_3.1', 'loan_type_4.1'])
+X = df1.drop(columns=["approved", "action_taken", "derived_race", "derived_sex", "loan_type", "loan_purpose", "negative_amortization", 
+                      "applicant_age", "occupancy_type"
+       ])
+
+
+#removing interest rate and rate spread to prevent data leakage as models are matching empty values here to unapproved applications
+X = X.drop(columns=["interest_rate", "rate_spread"])
 y = df1['approved']
 
 print(X.columns.to_list())
@@ -119,16 +123,16 @@ print(X.columns.to_list())
 
 X_train_RF, X_test_RF, y_train_RF, y_test_RF = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)    
 
-X_train_scaled_RF = scaler.fit_transform(X_train_RF)
-X_test_scaled_RF = scaler.transform(X_test_RF)
-
+imputer = SimpleImputer(strategy="median")
+X_train_RF = pd.DataFrame(imputer.fit_transform(X_train_RF))
+X_test_RF = pd.DataFrame(imputer.transform(X_test_RF))
 
 
 Model_RF = RandomForestClassifier(class_weight="balanced", random_state=42)
 
-Model_RF.fit(X_train_scaled_RF, y_train_RF)
+Model_RF.fit(X_train_RF, y_train_RF)
 
-y_pred_RF = Model_RF.predict(X_test_scaled_RF)
+y_pred_RF = Model_RF.predict(X_test_RF)
 
 accuracy = accuracy_score(y_test_RF, y_pred_RF)
 
@@ -158,3 +162,11 @@ os.makedirs(directory, exist_ok=True)
 
 output_file_path = os.path.join(directory, "LR_test_data.csv")
 positive_predictions.to_csv(output_file_path, index=False)
+
+
+feature_importance = pd.DataFrame({
+    "feature": X_train_RF.columns,
+    "importance": Model_RF.feature_importances_
+}).sort_values("importance", ascending=False)
+
+print(feature_importance.head(20))

@@ -21,6 +21,8 @@ from sklearn.metrics import accuracy_score, classification_report
 
 df = pd.read_csv("processed_datasets/NY2019.csv")
 
+
+
 y = df['approved']
 X = df.drop(columns=["approved", "action_taken",  'loan_type.1', 'approved.1', 'action_taken.1', 'loan_amount.1',
        'income.1', 'debt_to_income_ratio.1', 'loan_to_value_ratio.1',
@@ -28,10 +30,13 @@ X = df.drop(columns=["approved", "action_taken",  'loan_type.1', 'approved.1', '
        'loan_type_1.1', 'loan_type_2.1', 'loan_type_3.1', 'loan_type_4.1', 'loan_purpose', 'occupancy_type', 'derived_race', 'derived_sex',
        'applicant_age', 'negative_amortization'
        ])
+X = X.drop(columns=["interest_rate", "rate_spread"])
 
 imputer = SimpleImputer(strategy= "median")
 
-X = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
+
+
+print(X['interest_rate'].value_counts)
 """
 Setting target by race
 
@@ -56,7 +61,12 @@ thresholded_optimiser.fit(X_train, y_train, sensitive_features=A_train)  #sets u
 y_pred =thresholded_optimiser.predict(X_test, sensitive_features=A_test, random_state=42)  
 threshold_rules_by_group = thresholded_optimiser.interpolated_thresholder_.interpolation_dict    #sets up the threshold target for each group
 
+#Saving model
+import joblib
 
+joblib.dump(thresholded_optimiser, "mitigated_models/threshold_optimiser_race_LR.pkl")
+
+thresholded_optimiser= joblib.load("mitigated_models/threshold_optimiser_race_LR.pkl")
 
 accuracy = accuracy_score(y_test, y_pred)
 classification_report_race = classification_report(y_test, y_pred)
@@ -162,6 +172,10 @@ y_pred_age =thresholded_optimiser_age.predict(X_test, sensitive_features=B_test,
 threshold_rules_by_age_group = thresholded_optimiser_age.interpolated_thresholder_.interpolation_dict    #sets up the threshold target for each group
 
 
+
+joblib.dump(thresholded_optimiser_age, "mitigated_models/thresholded_optimiser_age_LR.pkl")
+
+thresholded_optimiser_age = joblib.load("mitigated_models/thresholded_optimiser_age_LR.pkl")
 
 accuracy = accuracy_score(y_test_age, y_pred_age)
 classification_report_age = classification_report(y_test_age, y_pred_age)

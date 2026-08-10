@@ -88,6 +88,7 @@ X = df1.drop(columns=["approved", "action_taken", "derived_race", "derived_sex",
        'income.1', 'debt_to_income_ratio.1', 'loan_to_value_ratio.1',
        'interest_rate.1', 'property_value.1', 'loan_term.1', 'rate_spread.1',
        'loan_type_1.1', 'loan_type_2.1', 'loan_type_3.1', 'loan_type_4.1'])
+X = X.drop(columns=["interest_rate", "rate_spread"])
 y = df1['approved']
 
 oversample = RandomOverSampler(sampling_strategy = 'minorty')

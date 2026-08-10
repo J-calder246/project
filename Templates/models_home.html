@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Mortgage Approval Model Demonstration</h1>
+
+<p>
+    This website demonstrates machine learning models used to predict
+    mortgage application outcomes and evaluate fairness across demographic groups.
+</p>
+
+<div class="cards">
+    <div class="card">
+        <h3>Basic Models</h3>
+        <p>Use basic machine learning models on the application to predict approval and delinquency with no mitigation efforts.</p>
+        <a href="/basic_models">Open Models</a>
+    </div>
+
+    <div class="card">
+        <h3>Preprocessing techniques</h3>
+        <p>Choose various preprocessing techniques for improving model fairness.</p>
+        <a href="/preprocessing">Try Prediction</a>
+    </div>
+
+    <div class="card">
+        <h3>In-Processing</h3>
+        <p>Choose various In-processing techniques for improving model fairness</p>
+        <a href="/in-processing">Input Data</a>
+    </div>
+
+    <div class="card">
+        <h3>Post-processing techniques</h3>
+        <p>Choose various Post-processing techniques for improving model fairness</p>
+        <a href="/fairness">Open Fairness Results</a>
+    </div>
+
+    <div class="card">
+        <h3>Fairness Metrics</h3>
+        <p>View the fairness metrics of each model to decide which model may be best suited for the application</p>
+        <a href="/fairness">Open Fairness Results</a>
+    </div>
+
+    
+</div>
+{% endblock %}

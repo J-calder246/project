@@ -13,13 +13,14 @@ class Config:
     # Mongo configuration (URI only does not connect here)
     MONGO_URI = os.environ.get(
         "MONGO_URI",
-        "mongodb+srv://2511607_db_user:2p9F5hfYzPkRHGMY@cluster0.gqzgwsi.mongodb.net/",
+        "mongodb+srv://2511607_db_user:Izp9wYNoNgybKG6d@cluster0.ekuobcv.mongodb.net/"
     )
     
-    MONGO_DB = "Mortgage_datasets"
-    INPUT_COLLECTION = "Mortgage_data"
+    MONGO_DB = "mortgageDB"
+    INPUT_COLLECTION = "inputcollection"
     
 
 
 
 MONGO_CLIENT = None
+

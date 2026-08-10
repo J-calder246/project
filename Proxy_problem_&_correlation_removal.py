@@ -24,17 +24,16 @@ df = pd.read_csv("processed_datasets/NY2019.csv")
 
 print(df.columns.to_list)
 
-X = df.drop(columns=["approved", "action_taken", "derived_race", "derived_sex", "loan_type", "loan_purpose", "negative_amortization", "applicant_age", "occupancy_type", 'loan_type.1', 'approved.1', 'action_taken.1', 'loan_amount.1',
-       'income.1', 'debt_to_income_ratio.1', 'loan_to_value_ratio.1',
-       'interest_rate.1', 'property_value.1', 'loan_term.1', 'rate_spread.1',
-       'loan_type_1.1', 'loan_type_2.1', 'loan_type_3.1', 'loan_type_4.1', 'applicant_age_35-44',
-       'applicant_age_45-54', 'applicant_age_55-64', 'applicant_age_65-74',
-       'applicant_age_<25', 'applicant_age_>74',  'derived_race_2 or more minority races',
-       'derived_race_American Indian or Alaska Native', 'derived_race_Asian',
-       'derived_race_Black or African American', 'derived_race_Joint',
-       'derived_race_Native Hawaiian or Other Pacific Islander',
-       'derived_race_White', 'derived_sex_Female', 'derived_sex_Joint',
-       'derived_sex_Male'])
+X = df.drop(columns=["approved", "action_taken", "derived_race", "derived_sex", "loan_type", "loan_purpose", 
+                     "negative_amortization", "applicant_age", "occupancy_type", 'applicant_age_35-44',
+                    'applicant_age_45-54', 'applicant_age_55-64', 'applicant_age_65-74',
+                    'applicant_age_<25', 'applicant_age_>74',  'derived_race_2 or more minority races',
+                     'derived_race_American Indian or Alaska Native', 'derived_race_Asian',
+                    'derived_race_Black or African American', 'derived_race_Joint',
+                    'derived_race_Native Hawaiian or Other Pacific Islander',
+                    'derived_race_White', 'derived_sex_Female', 'derived_sex_Joint',
+                    'derived_sex_Male'])
+X = X.drop(columns=["interest_rate", "rate_spread"])
 
 print(X.columns.to_list)
 y = df['approved']
@@ -67,6 +66,16 @@ logreg = LogisticRegression(max_iter=1000,class_weight="balanced", random_state=
 logreg.fit(X_train_scaled, y_train)
 
 y_pred = logreg.predict(X_test_scaled)
+
+#Saving model
+import joblib
+
+directory = "mitigated_models" 
+os.makedirs(directory, exist_ok=True)
+
+joblib.dump(logreg, "mitigated_models/removed_sensitive_features.pkl")
+
+logreg = joblib.load("mitigated_models/removed_sensitive_features.pkl")
 
 accuracy = accuracy_score(y_test, y_pred)
 print(f"Accuracy: {accuracy:.2f}")
@@ -313,6 +322,13 @@ logreg = LogisticRegression(max_iter=1000,class_weight="balanced", random_state=
 logreg.fit(X_train_scaled, y_train)
 
 y_pred = logreg.predict(X_test_scaled)
+
+#Saving model
+
+
+joblib.dump(logreg, "mitigated_models/correlation_remover.pkl")
+
+logreg_CR = joblib.load("mitigated_models/correlation_removers.pkl")
 
 accuracy = accuracy_score(y_test, y_pred)
 print(f"Accuracy: {accuracy:.2f}")
