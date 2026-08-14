@@ -8,7 +8,7 @@ This module evlauate the bias propensity of the first model (model focussing on 
 import pandas as pd
 """evaluation packages""" 
 from fairlearn.metrics import MetricFrame, count, equalized_odds_difference, equalized_odds_ratio,  false_negative_rate, false_positive_rate, selection_rate,true_positive_rate
-from training_models.modelling import y_pred, y_test 
+
 from sklearn.metrics import accuracy_score  #accuracy score for original model
 
 
@@ -16,7 +16,7 @@ df = pd.read_csv("modelled_datasets/LR_test_data.csv")
 
 #Setting up 'MetricFrame'  https://fairlearn.org/main/api_reference/generated/fairlearn.metrics.MetricFrame.html 
 
-metrics_dict = {"accuracy":selection_rate, "selection rate": accuracy_score, "count": count, "true_positive_rate": true_positive_rate}
+metrics_dict = {"accuracy": accuracy_score, "selection rate": selection_rate, "count": count, "true_positive_rate": true_positive_rate}
 
 
 """
@@ -193,10 +193,9 @@ Attempting mitigation with three protected attributes at a time
 """
 
 y = df_modelling['approved']
-X = df_modelling.drop(columns=["approved", "action_taken", "loan_type", "loan_purpose", "negative_amortization", "occupancy_type", 'loan_type.1', 'approved.1', 'action_taken.1', 'loan_amount.1',
-       'income.1', 'debt_to_income_ratio.1', 'loan_to_value_ratio.1',
-       'interest_rate.1', 'property_value.1', 'loan_term.1', 'rate_spread.1',
-       'loan_type_1.1', 'loan_type_2.1', 'loan_type_3.1', 'loan_type_4.1'])
+X = df_modelling.drop(columns=["approved", "action_taken", "loan_type", 
+                               "loan_purpose", "negative_amortization", "occupancy_type"
+       ])
 X = X.drop(columns=["interest_rate", "rate_spread"])
 A = X[['applicant_age', 'derived_race']]  #feature for sensitive feature
 
@@ -239,7 +238,7 @@ exponentiated_gradient.fit(X_train, y_train, sensitive_features=A_train)
 
 y_pred = exponentiated_gradient.predict(X_test, random_state=69)
 
-print("Classification Report:")
+print("Classification Report Exponentiated gradient:")
 print(classification_report(y_test, y_pred))
 
 

@@ -26,3 +26,5 @@ print(df1_rejects['interest_rate'].value_counts(dropna=False).head(20))
 
 
 print(df1_rejects['rate_spread'].value_counts(dropna=False).head(20))
+
+print(df['interest_rate'].range)

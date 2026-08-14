@@ -123,6 +123,8 @@ print(X.columns.to_list())
 
 X_train_RF, X_test_RF, y_train_RF, y_test_RF = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)    
 
+test_index_RF = X_test_RF.index
+
 imputer = SimpleImputer(strategy="median")
 X_train_RF = pd.DataFrame(imputer.fit_transform(X_train_RF))
 X_test_RF = pd.DataFrame(imputer.transform(X_test_RF))
@@ -142,10 +144,28 @@ print(f"accuracy: {accuracy:.4f}")
 print("classification report:")
 print(classification_report(y_test_RF, y_pred_RF) )
 
+feature_importance = pd.DataFrame({
+    "feature": X_train_RF.columns,
+    "importance": Model_RF.feature_importances_
+}).sort_values("importance", ascending=False)
+
+print(feature_importance.head(20))
+
 joblib.dump(Model_RF, "models/Applications_RF.pkl")
 
 model_approval_RF = joblib.load("models/Applications_RF.pkl")
 
+#Saving RF data
+positive_predictions_RF = df1.loc[test_index_RF]
+
+positive_predictions_RF["y_pred"] = y_pred_RF  #makes new column for predicted value
+
+
+directory = "modelled_datasets" 
+os.makedirs(directory, exist_ok=True)
+
+output_file_path = os.path.join(directory, "RF_test_Data.csv")
+positive_predictions_RF.to_csv(output_file_path, index=False)
 
 
 #saving approved predictions to dataset
@@ -164,9 +184,3 @@ output_file_path = os.path.join(directory, "LR_test_data.csv")
 positive_predictions.to_csv(output_file_path, index=False)
 
 
-feature_importance = pd.DataFrame({
-    "feature": X_train_RF.columns,
-    "importance": Model_RF.feature_importances_
-}).sort_values("importance", ascending=False)
-
-print(feature_importance.head(20))

@@ -11,10 +11,9 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 import joblib
-from sklearn.ensemble import RandomForestClassifier
 import os
 
 
@@ -56,18 +55,16 @@ X_test = imputer.transform(X_test)
 #X_test = X_test.dropna()
 
 
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+
 
 #initialising model
 
-logreg = LogisticRegression(max_iter=1000,class_weight="balanced", random_state=42)
+RF = RandomForestClassifier(class_weight="balanced", random_state=42)
 
 #training
-logreg.fit(X_train_scaled, y_train)
+RF.fit(X_train, y_train)
 
-y_pred = logreg.predict(X_test_scaled)
+y_pred = RF.predict(X_test)
 
 #Saving model
 import joblib
@@ -75,16 +72,14 @@ import joblib
 directory = "mitigated_models" 
 os.makedirs(directory, exist_ok=True)
 
-joblib.dump(logreg, "mitigated_models/removed_sensitive_features.pkl")
+joblib.dump(RF, "mitigated_models/removed_sensitive_features_RF.pkl")
 
-logreg = joblib.load("mitigated_models/removed_sensitive_features.pkl")
+
 
 accuracy = accuracy_score(y_test, y_pred)
 print(f"Accuracy: {accuracy:.2f}")
 
-#print reports
-print("Confusion Matrix:")
-print(confusion_matrix(y_test, y_pred))
+
 
 print("Classification Report:")
 print(classification_report(y_test, y_pred))
@@ -93,31 +88,16 @@ print(classification_report(y_test, y_pred))
 
 
 """
-Original classification report (from trainingmodels/modelling.py)
-
+Accuracy: 0.83
 Classification Report:
               precision    recall  f1-score   support
 
-       False       0.52      0.71      0.60     15776
-        True       0.88      0.76      0.82     42915
+       False       0.66      0.65      0.66     17755
+        True       0.89      0.89      0.89     54167
 
-    accuracy                           0.75     58691
-   macro avg       0.70      0.74      0.71     58691
-weighted avg       0.78      0.75      0.76     58691
-
-New classification report
-
-Classification Report:
-              precision    recall  f1-score   support
-
-       False       0.47      0.68      0.56     17755
-        True       0.88      0.75      0.81     54167
-
-    accuracy                           0.73     71922
-   macro avg       0.67      0.72      0.68     71922
-weighted avg       0.78      0.73      0.75     71922
-
-
+    accuracy                           0.83     71922
+   macro avg       0.77      0.77      0.77     71922
+weighted avg       0.83      0.83      0.83     71922
 """
 
 
@@ -128,7 +108,7 @@ Creating metricframe for analysis
 #matching original data to the predicted data
 
 
-test_data = df.loc[test_index].copy()
+test_data = df.loc[test_index]
 
 test_data["y_pred"] = y_pred  #puts y_pred value into the test data
 
@@ -162,40 +142,21 @@ print(equalized_odds_difference(
 ))
 
 """
-Original model
-______________
-metrics frame by Race
-                                           accuracy  selection rate    count
-derived_race                                                                
-2 or more minority races                   0.194175        0.582524    103.0
-American Indian or Alaska Native           0.161290        0.689516    248.0
-Asian                                      0.615758        0.773152   5356.0
-Black or African American                  0.400665        0.642983   5109.0
-Joint                                      0.708989        0.767416    890.0
-Native Hawaiian or Other Pacific Islander  0.116438        0.767123    292.0
-White                                      0.669544        0.756452  46693.0
-Equalised odds difference for race
-0.5110852110852111
-
-
-Results
-_____________
+METRIC FRAME
+_______________
 
 metrics frame by Race
                                            accuracy  selection rate    count  true positive rate
 derived_race                                                                                    
-2 or more minority races                   0.668831        0.402597    154.0            0.587302
-American Indian or Alaska Native           0.720137        0.392491    293.0            0.627907
-Asian                                      0.787999        0.676643   6816.0            0.817398
-Black or African American                  0.715085        0.578136   5900.0            0.733531
-Joint                                      0.771055        0.726901   1223.0            0.814241
-Native Hawaiian or Other Pacific Islander  0.756677        0.305638    337.0            0.575540
-White                                      0.726656        0.645204  57199.0            0.740752
+2 or more minority races                   0.824675        0.480519    154.0            0.873016
+American Indian or Alaska Native           0.788396        0.481229    293.0            0.806202
+Asian                                      0.854754        0.756602   6816.0            0.917619
+Black or African American                  0.800339        0.674576   5900.0            0.878240
+Joint                                      0.858545        0.796402   1223.0            0.913313
+Native Hawaiian or Other Pacific Islander  0.833828        0.471810    337.0            0.870504
+White                                      0.830749        0.765695  57199.0            0.886155
 Equalised odds difference for race
-0.27753917123995864
-
-Big increases to accuracy and selection rate for the smallest classes and similar reduction in equalised odds difference to the First mitigation (expponentiated gradient reduction)
-
+0.16524011710192135
 """
 
 
@@ -223,37 +184,19 @@ print(equalized_odds_difference(
 ))
 
 """
-Original model
-______________
 
 metrics frame by age
-               accuracy  selection rate    count
-applicant_age                                   
-35-44          0.738452        0.792233  16995.0
-45-54          0.625667        0.737815  17049.0
-55-64          0.568465        0.728677  13788.0
-65-74          0.562900        0.711158   7035.0
-<25            0.867238        0.811563   1401.0
->74            0.455221        0.683038   2423.0
-
-Equalised odds difference for age
-0.48032064284599785
-
-Results
-________
-accuracy  selection rate    count  true positive rate
+               accuracy  selection rate    count  true positive rate
 applicant_age                                                       
-25-34          0.837898        0.832152  13399.0            0.894187
-35-44          0.763240        0.699361  17220.0            0.795256
-45-54          0.707891        0.600190  16843.0            0.712996
-55-64          0.673278        0.528553  13764.0            0.644057
-65-74          0.642057        0.476864   6786.0            0.585325
-<25            0.840570        0.881275   1474.0            0.944816
->74            0.619869        0.404351   2436.0            0.519143
+25-34          0.878200        0.857079  13399.0            0.932561
+35-44          0.847967        0.791754  17220.0            0.908302
+45-54          0.820281        0.738823  16843.0            0.886545
+55-64          0.806888        0.690933  13764.0            0.855320
+65-74          0.787798        0.664162   6786.0            0.824276
+<25            0.844640        0.837856   1474.0            0.920569
+>74            0.768883        0.602627   2436.0            0.793640
 Equalised odds difference for age
-0.4256726401437628
-
-No large changes to accuracy, selection rate or equalised odds difference
+0.2082713717294321
 """
 
 """
@@ -314,25 +257,19 @@ CR_test_index = X_test.index
 
 
 
-
-
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
-
 #initialising model
 
-logreg = LogisticRegression(max_iter=1000,class_weight="balanced", random_state=42)
+RF = RandomForestClassifier(class_weight="balanced", random_state=42)
 
 #training
-logreg.fit(X_train_scaled, y_train)
+RF.fit(X_train, y_train)
 
-y_pred = logreg.predict(X_test_scaled)
+y_pred = RF.predict(X_test)
 
 #Saving model
 
 
-joblib.dump(logreg, "mitigated_models/correlation_remover.pkl")
+joblib.dump(RF, "mitigated_models/correlation_remover_RF.pkl")
 
 
 
@@ -371,7 +308,7 @@ Evaluation with metric frame
 ___________________________
 """
 
-CR_test_data = df.loc[CR_test_index].copy()
+CR_test_data = df.loc[CR_test_index]
 
 CR_test_data["y_pred"] = y_pred  #puts y_pred value into the test data
 
