@@ -20,7 +20,7 @@ import os
 import joblib 
 from sklearn.impute import SimpleImputer
 
-
+#loading the logistic regression models that will be used
 model_LR_fm = joblib.load("models/FMlogistic.pkl")
 scaler_fm = joblib.load("models/FMscaler.pkl")
 model_LR_1st = joblib.load("models/logistic.pkl")
@@ -32,7 +32,7 @@ print("df head")
 print(df.head)
 
 
-
+#Setting X and y(target) variables
 X = df.drop(columns=["approved", "action_taken", "derived_race", "derived_sex", "loan_type", 
                      "loan_purpose", "negative_amortization", "applicant_age", "occupancy_type", 
                      
@@ -46,8 +46,7 @@ imputer = SimpleImputer(strategy="median")
 X = imputer.fit_transform(X)
 
 
-#X_train = X_train.dropna()
-#X_test = X_test.dropna()
+
 
 #scaling X
 scaler = StandardScaler()
@@ -55,11 +54,11 @@ X = scaler.fit_transform(X)
 
 
 
-#modelling full dataset based upon modelling.py
+#modelling full dataset based upon model created and saved in modelling.py
 
 predictions = model_LR_1st.predict(X)
 
-probability = model_LR_1st.predict_proba(X)[:, 1]   #probability of delinquency
+probability = model_LR_1st.predict_proba(X)[:, 1]   #probability of delinquency shows us how certain the models are 
 print(predictions
       )
 print(probability)
@@ -133,7 +132,7 @@ df.to_csv(output_file_path, index=False)
 
 print(df.columns.tolist())
 
-
+#cutting the dataset down to the features that are in (or can be interpreted to be in) the delinquency dataset 
 X_fm = df[['loan_amount', 'debt_to_income_ratio', 'loan_to_value_ratio', 'loan_term', 'interest_rate']]
 
 
@@ -145,7 +144,7 @@ X_fm = X_fm.apply(pd.to_numeric, errors="coerce")  #ensures numeric values
 
 #Changing column names to match fannie mae dataset
 Column_names = [
-    "original UPB",  #represent original unpaid balance (i.e. loan amount)
+    "original UPB",  #represent original unpaid principal balance (i.e. loan amount)
     "debt to income",
     "original LTV ratio", #loan to value
     "original loan term",

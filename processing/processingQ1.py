@@ -1,3 +1,9 @@
+"""
+Note: 
+As this dataset in it's rawest form was too large to be uploaded onto github, 
+processing to reduce the size of it (limiting to NY entries and reducing the amount of columns)
+was done in a jupyter notebook
+"""
 import pandas as pd
 import os
 from pathlib import Path
@@ -6,7 +12,7 @@ from io import StringIO
 
 
 
-df = pd.read_csv("raw_datasets/2019, NY fianl (1).xls")
+df = pd.read_csv("raw_datasets/2019, NY fianl (1).xls")  
 print(df.columns)
 
 
@@ -14,6 +20,8 @@ print(df["Current Loan Delinquency Status"].value_counts(dropna=False))
 
     
 """
+Deciding what features to keep based upon those that feature in both datasets
+
 Input features from first dataset:
 -----------------------------------
 "action_taken",
@@ -101,7 +109,9 @@ df = df[df["Current Loan Delinquency Status"] != "XX"].copy()
 
 df["Current Loan Delinquency Status"] = pd.to_numeric(df["Current Loan Delinquency Status"], errors="coerce")
 
-#Getting maximum delinquecy for each case, so I can set up a way of classifying deliquency 
+#Getting maximum delinquecy for each case, so I can set up a way of classifying deliquency.
+# This is done as the dataset features multiple rows for each borrower, with an additional row being added as they spend more time delinquent.
+#This method selects each borrower at their most significant level 
 
 print(df.shape)
 
@@ -154,5 +164,5 @@ delinquent
 False    8488
 True     2171
 
-classes are imbalanced, heavily weighted towards non-delinquent homeowners
+classes are imbalanced, heavily weighted towards non-delinquent homeowners. Could alleviate this by creating another category for those who are severaly delinquent
 """

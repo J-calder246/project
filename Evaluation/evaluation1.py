@@ -2,7 +2,7 @@
 Evaluation model 1
 __________________
 
-This module will evaluate the bias of the basic models, before any attempts to reduce bias
+This module will evaluate the bias that results when the data goes through both of the original models (application model ---> Delinquency model ---> prediction)
 
 """
 
@@ -13,7 +13,7 @@ import pandas as pd
 df_original = pd.read_csv("processed_datasets/NY2019.csv")   #This dataset must be used and not a test data file like in the other statistical parity file as in the 2 layer section the data isn't split into train and test
 print(df_original.head())
 
-df_approved_non_delinquent = pd.read_csv("modelled_datasets/approved_non_delinquent.csv")
+df_approved_non_delinquent = pd.read_csv("modelled_datasets/approved_non_delinquent.csv")  #applications from df_original that were predicted to be approved and then predicted to be non-delinquent
 
 """
 First some processing
@@ -57,6 +57,7 @@ print(df_original['derived_race'].value_counts(dropna=False).head(20))
 print("Race of approved applications:")
 print(df_approved_non_delinquent['derived_race'].value_counts(dropna=False).head(20))
 
+#prints what ratio of applications by race are approved when sent through both models
 print("Ratio of applications approved/applications by race")
 print(((df_approved_non_delinquent['derived_race'].value_counts(dropna=False).head(20))/(df_original['derived_race'].value_counts(dropna=False).head(20))))
 
@@ -90,6 +91,7 @@ print(df_original['derived_sex'].value_counts(dropna=False).head(20))
 print("Gender of approved applications:")
 print(df_approved_non_delinquent['derived_sex'].value_counts(dropna=False).head(20))
 
+#prints what ratio of applications by race are approved when sent through both models
 print("Ratio of applications approved/total applications by Gender")
 print(((df_approved_non_delinquent['derived_sex'].value_counts(dropna=False).head(20))/(df_original['derived_sex'].value_counts(dropna=False).head(20))))
 
@@ -111,6 +113,7 @@ print(df_original['applicant_age'].value_counts(dropna=False).head(20))
 print("age groups of approved applications:")
 print(df_approved_non_delinquent['applicant_age'].value_counts(dropna=False).head(20))
 
+#prints what ratio of applications by race are approved when sent through both models
 print("Ratio of applications approved/applications by age")
 print(((df_approved_non_delinquent['applicant_age'].value_counts(dropna=False).head(20))/(df_original['applicant_age'].value_counts(dropna=False).head(20))))
 
@@ -147,7 +150,7 @@ Remember 80% Rule
 """
 
 """
-Section Finding favoured races
+Section Finding approved ratio for the favoured races  (asian, joint and white)
 _____________________________-_
 
 Positives(asian+joint+white)/Applications(asian+joint+white)   Working it out by dividing the sums pevents smaller groups have the same impact as larger groups
@@ -184,7 +187,16 @@ print(Ratio_approved_favoured)
 
 #Ratio of favoured racial groups: 0.454704
 
+"""
+Calculating statistical parity ratio for the unfavoured groups
+Equation
+________
+Statistical parity ratio = (Probability of favourable outcome for underpriveleged group) / (probability of positive outcome for advantaged group)
+In this case we take probability as the percentage of applicants selected out of the whole sample size for that group
 
+Favoured groups defined as those with high approval rates. Here we select white asian and joint as those groups have high approval rates (over 60%)
+
+"""
 
 Amerindian_approved = (df_approved_non_delinquent["derived_race"] == "American Indian or Alaska Native").value_counts(dropna=True)
 print(Amerindian_approved)

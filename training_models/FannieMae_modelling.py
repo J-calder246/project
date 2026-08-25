@@ -20,7 +20,7 @@ print(df.head())
 
 print(df.isna().sum().sort_values(ascending=False))
 
-
+#drop original list price and used UPB as a stand in for loan amount
 df = df.drop(columns=["original list price"])
 #dropping nas (change later if appropriate)
 df = df.dropna()
@@ -86,3 +86,7 @@ joblib.dump(scaler, "models/FMscaler.pkl")
 
 
 model_FM = joblib.load("models/FMlogistic.pkl")
+
+"""
+Random Forest
+"""

@@ -1,3 +1,5 @@
+#module for initialising Flask app
+
 import os
 from pathlib import Path
 from routes import app

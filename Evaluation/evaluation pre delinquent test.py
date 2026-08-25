@@ -44,6 +44,8 @@ print(df_original['derived_race'].value_counts(dropna=False).head(20))
 print("Race of approved applications:")
 print(df_modelled['derived_race'].value_counts(dropna=False).head(20))
 
+
+#finding the ratio of approved applications by dividing the total approved applications by race by the total number of applications from the testing data
 print("Ratio of applications approved/applications by race")
 print(((df_modelled['derived_race'].value_counts(dropna=False).head(20))/(df_original['derived_race'].value_counts(dropna=False).head(20))))
 
@@ -91,6 +93,8 @@ print(df_original['applicant_age'].value_counts(dropna=False).head(20))
 print("age groups of approved applications:")
 print(df_modelled['applicant_age'].value_counts(dropna=False).head(20))
 
+
+#doing the division process but for age
 print("Ratio of applications approved/applications by age")
 print(((df_modelled['applicant_age'].value_counts(dropna=False).head(20))/(df_original['applicant_age'].value_counts(dropna=False).head(20))))
 
@@ -138,6 +142,8 @@ print(df_original['derived_sex'].value_counts(dropna=False).head(20))
 print("Gender of approved applications:")
 print(df_modelled['derived_sex'].value_counts(dropna=False).head(20))
 
+
+#division process by gender
 print("Ratio of applications approved/total applications by Gender")
 print(((df_modelled['derived_sex'].value_counts(dropna=False).head(20))/(df_original['derived_sex'].value_counts(dropna=False).head(20))))
 
@@ -171,9 +177,17 @@ Female    0.579121
 """
 
 """
-Calculating statistical parity (ratio of positives between unfavoured and favoured groups)
+Calculating statistical parity ratio (ratio of positives between unfavoured and favoured groups)
+
+Statistical parity = (Probability of favourable outcome for underpriveleged group) / (probability of positive outcome for advantaged group)
+In this case we take probability as the percentage of applicants selected out of the whole sample size for that group
+
+Favoured groups defined as those with high approval rates. Here we select white asian and joint as those groups have high approval rates (over 60%)
 
 Favoured: Asian, Joint, White
+
+
+Unfavoured groups generally have much lower approval rates than the favoured groups 
 
 Unfavoured: 2 or more minority races, American Indian or Alaska Native, Asian, 
 Black or African American,  Joint, Native Hawaiian or Other Pacific Islander
@@ -181,7 +195,7 @@ Black or African American,  Joint, Native Hawaiian or Other Pacific Islander
 """
 
 
-#Positives
+#getting the ratio of positives for the combined advantaged groups
 
 Asian_approved = (df_modelled["derived_race"] == "Asian").value_counts(dropna=True)
 
@@ -207,7 +221,7 @@ print(Sum_applications_approved)
 
 Ratio_approved_favoured = ((Sum_approved_favoured)/ (Sum_applications_approved))             
 print("Ratio for favoured groups")
-print(Ratio_approved_favoured)   #Result = True     0.086328    (correct)
+print(Ratio_approved_favoured)     
 
 """
 
@@ -220,7 +234,7 @@ Ratio for favoured groups
 
 """
 
-#Ratio for 2 or more races
+#Ratio for 2 or more races ratio
 Two_or_more_approved = (df_modelled["derived_race"] == "2 or more minority races").value_counts(dropna=True)
 
 
@@ -239,7 +253,7 @@ print(Ratio_Two_or_more_Favoured)
 #Result    0.262528
 
 
-#Hawaiian or pacific Islander
+#Hawaiian or pacific Islander ratio
 
 Hawaiian_or_PI_approved = (df_modelled["derived_race"] == "Native Hawaiian or Other Pacific Islander").value_counts(dropna=True)
 
@@ -259,7 +273,7 @@ print(Hawaiian_or_PI_Favoured)
 # Results from this :   0.191061
 
 
-#Black or African American
+#Black or African American ratio
 
 Black_approved = (df_modelled["derived_race"] == "Black or African American").value_counts(dropna=True)
 

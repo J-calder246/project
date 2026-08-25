@@ -1,9 +1,18 @@
+#importing necessary libraries for processing
+
 import pandas as pd
 import os
 import numpy as np
 from pandas import DataFrame
-from sklearn.experimental import enable_iterative_imputer
-from sklearn.impute import IterativeImputer
+
+"""
+Note
+
+Many processing decisions are taken from the HMDA's glossary on the dataset. E.G. Removing applications irrelevant action_taken points like application withdrawn/ closed for incompleteness
+
+Link to glossary: https://ffiec.cfpb.gov/documentation/publications/loan-level-datasets/lar-data-fields 
+"""
+
 
 
 df = pd.read_csv("raw_datasets/state_NY 2019 (1).csv", low_memory=False)
@@ -16,11 +25,13 @@ print(df.columns.tolist())
 df = df.drop_duplicates()
 
 
-df = df[df["action_taken"].isin([1, 2, 3])]  #Keeps values for loan given out (1), loan approved but not purchased (2) and loan denied (3)
+df = df[df["action_taken"].isin([1, 2, 3])]  #Keeps values for loan given out (1), loan approved but not purchased (2) and loan denied (3). Other action aren't useful for what we are trying to do
 df["approved"] = df["action_taken"].isin([1, 2]) #defines first two as loans that are approved (wheterh they are accepted or not)
 df = df[
     (df["derived_dwelling_category"].isin(["Single Family (1-4 Units):Site-Built", "Single Family (1-4 Units):Manufactured"]))]   #focuses dataset on single family applications
 
+
+#Cutting dataset down to columns I want to use. 
 columns_to_keep = [
     "approved",
     "action_taken",
@@ -45,13 +56,9 @@ df = df[columns_to_keep]
 
 print(df.dtypes)
 
-directory = "processed_datasets" 
-os.makedirs(directory, exist_ok=True)
 
-output_file_path = os.path.join(directory, "reducedcols.csv")
-df.to_csv(output_file_path, index=False)
 
-#converting ranges into a single number for DTI and age
+#converting ranges into a single number for Debt to income so that higher levels can have more influence on models. This methods also means that DTI won't have to be encoded
 
 debt_to_income_mode = {
     "<20%": 10,    #low level to be generous to applicant with low levels of debt
@@ -86,7 +93,7 @@ Note: saving a dataset now before I start converting race and gender etc into du
 This is important for easy interpretation in the evaluation stage.
 """
 
-#Removing unclear values from dataset
+#Removing unclear values from dataset (like 1111 or race not available)
 
 race_cols_to_keep = [
     '2 or more minority races',
@@ -136,18 +143,20 @@ df_no_dummies.to_csv(output_file_path, index=False)  #getting a csv with no dumm
 cols_to_process = ["derived_race", "derived_sex", "loan_type", "loan_purpose", "negative_amortization",
                     "applicant_age", "occupancy_type", ]
 
-dummies = pd.DataFrame(pd.get_dummies(df, columns = cols_to_process,  drop_first=False)  )
+dummies = pd.DataFrame(pd.get_dummies(df, columns = cols_to_process,  drop_first=False)  ) #creates a dataset with the dummy values without removing the original unencoded values
 
 
 print("dummy cols")
 print(dummies.columns.to_list())
 
+#removes unencoded values from the dummies dataframe to prevent these columns from being duplicated
 dummies = dummies.drop(columns=['approved', 'action_taken', 'loan_amount', 'income', 
                                 'debt_to_income_ratio', 'loan_to_value_ratio', 'interest_rate', 
                                 'property_value', 'loan_term', 'rate_spread'])
 
 print(dummies.columns.to_list())
 
+#combines the two
 df = pd.concat([df, dummies], axis= 1)
 
 """
@@ -171,12 +180,7 @@ print(df.columns[df.columns.str.endswith(".1")])
 
 print(df.isnull().sum)
 
-"""
 
-iterative_imputer = IterativeImputer(max_iter=20, random_state=42)
-df = iterative_imputer.fit_transform(df)
-
-"""
 
 
 #Upload dataset
