@@ -9,7 +9,7 @@ This section will evlauate the bias of the first model which models the approval
 
 import pandas as pd
 
-df_original = pd.read_csv("processed_datasets/NY2019_no_dummies.csv")
+df_original = pd.read_csv("modelled_datasets/LR_test_data.csv")
 
 
 df_modelled = pd.read_csv("modelled_datasets/approved_application_1st_model_LR.csv")
