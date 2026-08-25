@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Mortgage Approval Model Demonstration</h1>
+
+<p>
+    This website demonstrates machine learning models used to predict
+    mortgage application outcomes and evaluate fairness across demographic groups.
+</p>
+
+<form method="POST" action="{{ url_for('process_data') }}">
+                    <input 
+                        type="hidden" name="select_id" value="{{ applicant_data['_id'] }}"
+                    >
+            
+                    <button type="submit" class="button">Begin modelling
+
+                    </button>
+                    
+                </form>
+
+
+    <h1>Applicant Data</h1>
+
+
+
+    <h2>Selected Applicant</h2>
+    <div class="card">
+    
+     <table class="custom-table">
+        
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>loan_type</th>
+                <th>loan_amount</th>
+                <th>income</th>
+                <th>debt_to_income_ratio</th>
+                <th>loan_to_value_ratio</th>
+                <th>interest_rate</th>
+                <th>property_value</th>
+                <th>interest_rate</th>
+                <th>property_value</th>
+                <th>loan_term</th>
+                <th>loan_type</th>
+                <th>loan_purpose</th>
+                <th>occupancy_type</th>
+                <th>race</th>
+                <th>Gender</th>
+                <th>Age band</th>
+                <th>negative amorization</th>
+                <th>rate_spread</th>
+            </tr>
+        
+            <tr>
+                <td>{{ applicant_data.applicant_id }}</td>
+                <td>{{ applicant_data.loan_type }}</td>
+                <td>{{ applicant_data.loan_amount }}</td>
+                <td>{{ applicant_data.income }}</td>
+                <td>{{ applicant_data.debt_to_income_ratio }}</td>
+                <td >{{ applicant_data.interest_rate }}</td>
+                <td >{{ applicant_data.property_value }}</td>
+                <td >{{ applicant_data.loan_term }}</td>
+                <td >{{ applicant_data.loan_purpose }}</td>
+                <td >{{ applicant_data.occupancy_type }}</td>
+                <td >{{ applicant_data.derived_race }}</td>
+                <td >{{ applicant_data.derived_sex }}</td>
+                <td >{{ applicant_data.applicant_age }}</td>
+                <td >{{ applicant_data.negative_amortization }}</td>
+                <td >{{ applicant_data.rate_spread }}</td>
+            </tr>
+       
+
+  
+{% endblock %}

@@ -72,26 +72,14 @@ debt_to_income_mode = {
     "48": 48,
     "49": 49,
     "50%-60%": 55,
-    ">60%": 65,  # low level to be punishing to applicant with high levels of debt
+    ">60%": 65,  # debt to income converted into single numbers so models can accordingly interpret the higher levels
     "Exempt": None
     
 
 }
-"""
-age_mode = {
-    "<25": 23,
-    "25-34": 30,
-    "35-44": 40,
-    "45-54": 50,
-    "55-64": 60,
-    "65-74": 70,
-    ">74": 80,
-    "8888": np.nan,
-}
-"""
+
 df["debt_to_income_ratio"] = df["debt_to_income_ratio"].map(debt_to_income_mode)
 
-#df["applicant_age"] = df["applicant_age"].map(age_mode)
 
 """
 Note: saving a dataset now before I start converting race and gender etc into dummy values. 

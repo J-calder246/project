@@ -267,10 +267,9 @@ from sklearn.metrics import accuracy_score  #accuracy score for original model
 sensitive_features_race_mitigated = df['derived_race'].iloc[y_test.index]  #sets sensitive feature to have same shape as the test data
 
 
-metrics_dict = {"accuracy": accuracy_score,
-                "true_positive_rate": true_positive_rate,  #getting true positive as that was the target or the algorithm
-                "selection_rate": selection_rate,
-                }
+metrics_dict = {"accuracy":accuracy_score, "selection rate": selection_rate,
+                 "count": count, "true positive rate":true_positive_rate}
+
 
 
 
@@ -382,3 +381,11 @@ Equalised odds difference for age
 0.0549201955101864
 
 """
+
+"""
+Exponentiated gradient on all three
+____________________________________
+
+"""
+
+

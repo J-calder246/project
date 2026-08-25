@@ -1,6 +1,6 @@
 import pandas as pd
 """evaluation packages""" 
-from fairlearn.metrics import MetricFrame, count, equalized_odds_difference, equalized_odds_ratio,  false_negative_rate, false_positive_rate, selection_rate
+from fairlearn.metrics import MetricFrame, count, equalized_odds_difference, true_positive_rate, equalized_odds_ratio,  false_negative_rate, false_positive_rate, selection_rate
 from training_models.modelling import y_pred, y_test 
 from sklearn.metrics import accuracy_score  #accuracy score for original model
 from fairlearn.reductions import ExponentiatedGradient, DemographicParity
@@ -79,6 +79,8 @@ weighted avg       0.80      0.81      0.79     58691
 #Using metric frame for evaluations
 
 sensitive_features_race=A_test
+metrics_dict = {"accuracy":accuracy_score, "selection rate": selection_rate,
+                "count": count, "true positive rate":true_positive_rate}
 
 
 

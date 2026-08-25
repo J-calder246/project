@@ -1,32 +1,44 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Add New Application</h2>
-<form method="POST" action="{{ url_for('input_data_post') }}">   
-    <p>ID</p><input type="text" name="id" id="id">   
+<form method="POST" action="{{ url_for('input_data_post') }}">     
     <p>Loan Type</p><input type="text" name="loan_type" id="loan_type">
-    <p>Loan Amount</p><input type="number" name="loan_amount" id="loan_amount">
-    <p>Income</p><input type="number" name="income" id="income">
-    <p>Debt-to-Income Ratio</p><input type="number" name="debt_to_income_ratio" id="debt_to_income_ratio">
-    <p>Loan-to-Value Ratio</p><input type="number" name="loan_to_value_ratio" id="loan_to_value_ratio">
-    <p>Interest Rate</p><input type="number" name="interest_rate" id="interest_rate">
-    <p>Property Value</p><input type="number" name="property_value" id="property_value">
-    <p>Loan Term</p><input type="number" name="loan_term" id="loan_term">
+    <p>Loan Amount</p><input type="text" name="loan_amount" id="loan_amount">
+    <p>Income</p><input type="text" name="income" id="income">
+    <p>Debt-to-Income Ratio</p><input type="text" name="debt_to_income_ratio" id="debt_to_income_ratio">
+    <p>Loan-to-Value Ratio</p><input type="text" name="loan_to_value_ratio" id="loan_to_value_ratio">
+    <p>Interest Rate</p><input type="text" name="interest_rate" id="interest_rate">
+    <p>Property Value</p><input type="text" name="property_value" id="property_value">
+    <p>Loan Term</p><input type="text" name="loan_term" id="loan_term">
     <p>loan_purpose</p><input type="text" name="loan_purpose" id="loan_purpose" min="0">
-    <p>Occupancy Type</p><input type="number" name="occupancy_type" id="occupancy_type" min="0">
-    <p>Race</p><input type="text" name="derived_race" id="derived_race">
-    <p>Gender</p>label for="derived_sex">What is the gender:</label>
+    <p>Occupancy Type</p><input type="text" name="occupancy_type" id="occupancy_type" min="0">
+    <p>Race</p>
+    <select name="derived_race" id="derived_race">
+        <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
+        <option value="Asian">Asian</option>
+        <option value="Black or African American">Black or African American</option>
+        <option value="Native Hawaiian or Other Pacific Islander">Native Hawaiian or Other Pacific Islander</option>
+        <option value="White">White</option>
+        <option value="2 or more minority races">2 or more minority races</option>
+        <option value="Joint">Joint</option>
+    </select>
+    <p>Gender</p>
     <select name="derived_sex" id="derived_sex">
         <option value="Joint">Joint</option>
         <option value="Male">Male</option>
         <option value="Female">Female</option>
     
     </select>
-    <p>Age Group</p>label for="applicant_age">Which age group do they lie in</label>
+    <p>Age Group</p>
     <select name="applicant_age" id="applicant_age">
-        <option value="Joint">Joint</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-    
+        <option value="<25"><25</option>
+        <option value="25-34">25-34</option>
+        <option value="35-44">35-44</option>
+        <option value="45-54">45-54</option>
+        <option value="55-64">55-64</option>
+        <option value="65-74">65-74</option>
+        <option value=">75">>75</option>
+        
     </select>
     <p>Negative Amortization</p><input type="text" name="negative_amortization" id="negative_amortization" min="0">
     <p>Rate Spread</p><input type="text" name="rate_spread" id="rate_spread" min="0">

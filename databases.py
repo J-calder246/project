@@ -6,10 +6,12 @@ _client = MongoClient(Config.MONGO_URI)
 _mdb = _client[Config.MONGO_DB]
 input_collection = _mdb[Config.INPUT_COLLECTION]
 
-
+"""
 #testing
 _client.admin.command("ping")
 print("MongoDB connection successful")
 
-result = input_collection.insert_one({"test": "working"})
+result = input_collection.insert_one({"test": "working", "number": 1})
 print("Inserted ID:", result.inserted_id)
+
+"""

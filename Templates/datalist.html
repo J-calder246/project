@@ -3,18 +3,16 @@
 
 {% block content %}
 
+
 <h1>Applicant Data</h1>
 
-<div class="card">
-    <h3>Quick preview (first 10 rows)</h3>
-    {{ preview_table|safe }}
-</div>
+
+
     <h2>All records</h2>
-    <h3>Update and Delete Records Here!</h3>
+    <h3>All submitted applications</h3>
     <div class="card">
     
-     <table class="custom-table">
-        
+    <table>    
         <thead>
             <tr>
                 <th>ID</th>
@@ -25,10 +23,7 @@
                 <th>loan_to_value_ratio</th>
                 <th>interest_rate</th>
                 <th>property_value</th>
-                <th>interest_rate</th>
-                <th>property_value</th>
                 <th>loan_term</th>
-                <th>loan_type</th>
                 <th>loan_purpose</th>
                 <th>occupancy_type</th>
                 <th>race</th>
@@ -36,16 +31,18 @@
                 <th>Age band</th>
                 <th>negative amorization</th>
                 <th>rate_spread</th>
+                <th>predict application</th>
             </tr>
         </thead>
-        <tbody>
+    <tbody>
         {% for row in records %}
         <tr>
-            <td>{{ row.get('ID','') }}</td>
+            <td>{{ row.get('_id','') }}</td>
             <td>{{ row.get('loan_type','') }}</td>
             <td>{{ row.get('loan_amount','')}}</td>
             <td>{{ row.get('income','')}}</td>
             <td>{{ row.get('debt_to_income_ratio','')}}</td>
+            <td>{{ row.get('loan_to_value_ratio','')}}</td>
             <td >{{ row.get('interest_rate','')}}</td>
             <td >{{ row.get('property_value','')}}</td>
             <td >{{ row.get('loan_term','')}}</td>
@@ -56,14 +53,27 @@
             <td >{{ row.get('applicant_age','')}}</td>
             <td >{{ row.get('negative_amortization','')}}</td>
             <td >{{ row.get('rate_spread','')}}</td>
+
+
             <td>
+                <form method="POST" action="{{ url_for('select_id') }}">
+                    <input 
+                        type="hidden" name="select_id" value="{{ row['_id'] }}"
+                    >
+            
+                    <button type="submit" class="button">Select application
+
+                    </button>
+                    
+                </form>
+                
                
                 
                 
             </td>
         </tr>
         {% endfor %}
-        </tbody>
+    </tbody>
 
 
                
@@ -71,5 +81,6 @@
     </table>
     </div>
 </div>
+
 
 {% endblock %}

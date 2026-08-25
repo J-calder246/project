@@ -10,35 +10,81 @@
 
 <div class="cards">
     <div class="card">
-        <h3>Basic Models</h3>
-        <p>Use basic machine learning models on the application to predict approval and delinquency with no mitigation efforts.</p>
-        <a href="/basic_models">Open Models</a>
+        <h3>Logistic Regression model</h3>
+        <p>Use a logistic regression model on the application</p>
+        <a href="/logistic">Logistic regression</a>
     </div>
 
     <div class="card">
-        <h3>Preprocessing techniques</h3>
-        <p>Choose various preprocessing techniques for improving model fairness.</p>
-        <a href="/preprocessing">Try Prediction</a>
+        <h3>Random Forest</h3>
+        <p>Use a Random Forest model on the applications</p>
+        <a href="/random_forest">Random Forest</a>
     </div>
 
     <div class="card">
-        <h3>In-Processing</h3>
-        <p>Choose various In-processing techniques for improving model fairness</p>
-        <a href="/in-processing">Input Data</a>
+        <h3>Mitigate Bias</h3>
+        <p>Enter a sample mortgage application and view the predicted result.</p>
+        <a href="/mitigation">Mitigation</a>
     </div>
 
     <div class="card">
-        <h3>Post-processing techniques</h3>
-        <p>Choose various Post-processing techniques for improving model fairness</p>
-        <a href="/fairness">Open Fairness Results</a>
+        <h3>Audit models</h3>
+        <p>View stats on accuracy and bias on each of the models.</p>
+        <a href="/audit_models">Audit</a>
     </div>
 
+    <h1>Applicant Data</h1>
+
+
+
+    <h2>Selected Applicant</h2>
     <div class="card">
-        <h3>Fairness Metrics</h3>
-        <p>View the fairness metrics of each model to decide which model may be best suited for the application</p>
-        <a href="/fairness">Open Fairness Results</a>
-    </div>
-
     
-</div>
+     <table class="custom-table">
+        
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>loan_type</th>
+                <th>loan_amount</th>
+                <th>income</th>
+                <th>debt_to_income_ratio</th>
+                <th>loan_to_value_ratio</th>
+                <th>interest_rate</th>
+                <th>property_value</th>
+                <th>interest_rate</th>
+                <th>property_value</th>
+                <th>loan_term</th>
+                <th>loan_type</th>
+                <th>loan_purpose</th>
+                <th>occupancy_type</th>
+                <th>race</th>
+                <th>Gender</th>
+                <th>Age band</th>
+                <th>negative amorization</th>
+                <th>rate_spread</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for row in records %}
+        <tr>
+            <td>{{ row.get('ID','') }}</td>
+            <td>{{ row.get('loan_type','') }}</td>
+            <td>{{ row.get('loan_amount','')}}</td>
+            <td>{{ row.get('income','')}}</td>
+            <td>{{ row.get('debt_to_income_ratio','')}}</td>
+            <td >{{ row.get('interest_rate','')}}</td>
+            <td >{{ row.get('property_value','')}}</td>
+            <td >{{ row.get('loan_term','')}}</td>
+            <td >{{ row.get('loan_purpose','')}}</td>
+            <td >{{ row.get('occupancy_type','')}}</td>
+            <td >{{ row.get('derived_race','')}}</td>
+            <td >{{ row.get('derived_sex','')}}</td>
+            <td >{{ row.get('applicant_age','')}}</td>
+            <td >{{ row.get('negative_amortization','')}}</td>
+            <td >{{ row.get('rate_spread','')}}</td>
+        </tr>
+        {% endfor %}
+
+  
 {% endblock %}
