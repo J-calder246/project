@@ -33,10 +33,11 @@ print(df.head)
 
 
 
-X = df.drop(columns=["approved", "action_taken", "derived_race", "derived_sex", "loan_type", "loan_purpose", "negative_amortization", "applicant_age", "occupancy_type", 'loan_type.1', 'approved.1', 'action_taken.1', 'loan_amount.1',
-       'income.1', 'debt_to_income_ratio.1', 'loan_to_value_ratio.1',
-       'interest_rate.1', 'property_value.1', 'loan_term.1', 'rate_spread.1',
-       'loan_type_1.1', 'loan_type_2.1', 'loan_type_3.1', 'loan_type_4.1'])
+X = df.drop(columns=["approved", "action_taken", "derived_race", "derived_sex", "loan_type", 
+                     "loan_purpose", "negative_amortization", "applicant_age", "occupancy_type", 
+                     
+       ])
+X = X.drop(columns=["interest_rate", "rate_spread"])
 y = df['approved']
 
 
@@ -239,3 +240,4 @@ os.makedirs(directory, exist_ok=True)
 
 output_file_path = os.path.join(directory, "approved_but_delinquent.csv")
 delinquent_applications.to_csv(output_file_path, index=False)
+

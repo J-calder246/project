@@ -10,7 +10,7 @@ This module will evaluate the bias of the basic models, before any attempts to r
 import pandas as pd
 
 
-df_original = pd.read_csv("processed_datasets/NY2019_no_dummies.csv")
+df_original = pd.read_csv("processed_datasets/NY2019.csv")   #This dataset must be used and not a test data file like in the other statistical parity file as in the 2 layer section the data isn't split into train and test
 print(df_original.head())
 
 df_approved_non_delinquent = pd.read_csv("modelled_datasets/approved_non_delinquent.csv")
@@ -69,13 +69,13 @@ Results
 _______
 Ratio of applications approved by race
 derived_race
-2 or more minority races                     0.013953
-American Indian or Alaska Native             0.010550
-Asian                                        0.073886
-Black or African American                    0.038214
-Joint                                        0.090909
-Native Hawaiian or Other Pacific Islander    0.009485
-White                                        0.080901 *
+2 or more minority races                     0.119143
+American Indian or Alaska Native             0.094412
+Asian                                        0.418170
+Black or African American                    0.226476
+Joint                                        0.520925
+Native Hawaiian or Other Pacific Islander    0.085068
+White                                        0.457714
 """
 
 
@@ -96,9 +96,9 @@ print(((df_approved_non_delinquent['derived_sex'].value_counts(dropna=False).hea
 """
 Results  (no significant differences)
 
-Joint     0.091710
-Male      0.064405
-Female    0.067302
+Joint     0.510543
+Male      0.378722
+Female    0.386617
 """
 """
 Age
@@ -118,12 +118,13 @@ print(((df_approved_non_delinquent['applicant_age'].value_counts(dropna=False).h
 Results
 _______
 
-35-44    0.092013
-45-54    0.073900
-55-64    0.066830
-65-74    0.062647
-<25      0.112489
->74      0.040789
+25-34    0.606669
+35-44    0.482382
+45-54    0.381869
+55-64    0.340438
+65-74    0.326447
+<25      0.583733
+>74      0.199562
 """
 
 
@@ -171,15 +172,17 @@ White_applications = (df_original["derived_race"] == "White").value_counts(dropn
 
 #Total Ratio calculation
 
-Sum_approved_favoured = (Asian_approved + Joint_approved + White_approved)   #Should be : 28264
+Sum_approved_favoured = (Asian_approved + Joint_approved + White_approved)   
 print(Sum_approved_favoured)
 
-Sum_applications_approved = (Asian_applications + Joint_applications + White_applications)  # Should be 327403
+Sum_applications_approved = (Asian_applications + Joint_applications + White_applications)  
 print(Sum_applications_approved)
 
-Ratio_approved_favoured = ((Sum_approved_favoured)/ (Sum_applications_approved))              #Should be: 0.086327
+Ratio_approved_favoured = ((Sum_approved_favoured)/ (Sum_applications_approved))              
 print("Ratio for favoured groups")
-print(Ratio_approved_favoured)   #Result = True     0.086328    (correct)
+print(Ratio_approved_favoured)  
+
+#Ratio of favoured racial groups: 0.454704
 
 
 
@@ -200,10 +203,10 @@ Ratio_AI_Favoured = ((Amerindian_ratio)/(Ratio_approved_favoured))
 print("Ratio of American Indian / Alaskan Native : Favoured groups")
 print(Ratio_AI_Favoured)
 
-#Results:  0.258566
+#Results:  0.207635
 
 
-#2 or more minority races                     0.034667
+#two or more minority
 
 Two_or_more_approved = (df_approved_non_delinquent["derived_race"] == "2 or more minority races").value_counts(dropna=True)
 
@@ -220,9 +223,9 @@ Ratio_Two_or_more_Favoured = ((Two_or_more_ratio)/(Ratio_approved_favoured))
 print("Ratio of two or more minority races : Favoured groups")
 print(Ratio_Two_or_more_Favoured)
 
-#Results  0.401570
+#Results  0.262024
 
-#Black or African American                    0.041480
+#Black or African American 
 
 Black_approved = (df_approved_non_delinquent["derived_race"] == "Black or African American").value_counts(dropna=True)
 
@@ -239,9 +242,9 @@ Ratio_Black_Favoured = ((Black_ratio)/(Ratio_approved_favoured))
 print("Black or African american : Favoured groups")
 print(Ratio_Black_Favoured)
 
-#Results 0.480499
+#Results 0.498073
 
-#Native Hawaiian or Other Pacific Islander    0.014810
+#Native Hawaiian or Other Pacific Islander       0.085068
 
 Hawaiian_or_PI_approved = (df_approved_non_delinquent["derived_race"] == "Native Hawaiian or Other Pacific Islander").value_counts(dropna=True)
 
@@ -258,7 +261,7 @@ Hawaiian_or_PI_Favoured = ((Hawaiian_or_PI_ratio)/(Ratio_approved_favoured))
 print("Ratio of Hawaiian/Pacific Islander : Favoured groups")
 print(Hawaiian_or_PI_Favoured)
 
-#Results:  0.171560
+#Results:  0.187085
 
 
 

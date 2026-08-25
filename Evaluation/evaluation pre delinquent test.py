@@ -50,39 +50,36 @@ print(((df_modelled['derived_race'].value_counts(dropna=False).head(20))/(df_ori
 """
 Results
 
+Race of entire sample:
 derived_race
-White                                        287012
-Race Not Available                            64177
-Asian                                         34446
-Black or African American                     29315
-Joint                                          5945
-Native Hawaiian or Other Pacific Islander      1688
-American Indian or Alaska Native               1568
-2 or more minority races                        750
+White                                        57199
+Asian                                         6816
+Black or African American                     5900
+Joint                                         1223
+Native Hawaiian or Other Pacific Islander      337
+American Indian or Alaska Native               293
+2 or more minority races                       154
 
 
+race of positives
 derived_race
-White                                        39813
-Race Not Available                            6900
-Asian                                         4450
-Black or African American                     2463
-Joint                                          898
-American Indian or Alaska Native                69
-Native Hawaiian or Other Pacific Islander       59
-2 or more minority races                        39
-Free Form Text Only                              4
+White                                        38307
+Asian                                         4380
+Black or African American                     2282
+Joint                                          881
+American Indian or Alaska Native                47
+Native Hawaiian or Other Pacific Islander       43
+2 or more minority races                        27
 
 Ratio of applications approved/applications by race
 derived_race
-2 or more minority races                     0.052000
-American Indian or Alaska Native             0.044005
-Asian                                        0.129188
-Black or African American                    0.084018
-Free Form Text Only                          0.035088
-Joint                                        0.151051
-Native Hawaiian or Other Pacific Islander    0.034953
-Race Not Available                           0.107515
-White                                        0.138715
+2 or more minority races                     0.175325
+American Indian or Alaska Native             0.160410
+Asian                                        0.642606
+Black or African American                    0.386780
+Joint                                        0.720360
+Native Hawaiian or Other Pacific Islander    0.127596
+White                                        0.669715
 
 """
 
@@ -103,35 +100,33 @@ ________
 
 Age groups of entire sample:
 applicant_age
-35-44    103000
-45-54    100145
-55-64     79538
-25-34     76035
-65-74     39322
->74       13491
-<25        7778
-
+35-44    17220
+45-54    16843
+55-64    13764
+25-34    13399
+65-74     6786
+>74       2436
+<25       1474
 Name: count, dtype: int64
 age groups of approved applications:
 applicant_age
-35-44    14391
-25-34    12674
-45-54    11853
-55-64     8483
-65-74     4117
+35-44    12150
+25-34    11439
+45-54     9774
+55-64     7105
+65-74     3383
 <25       1268
->74       1097
+>74        848
 Name: count, dtype: int64
 Ratio of applications approved/applications by age
 applicant_age
-25-34    0.166686
-35-44    0.139718
-45-54    0.118358
-55-64    0.106653
-65-74    0.104700
-<25      0.163024
->74      0.081313
-
+25-34    0.853720
+35-44    0.705575
+45-54    0.580300
+55-64    0.516202
+65-74    0.498526
+<25      0.860244
+>74      0.348112
 """
 """
 Percentage accepted by sex
@@ -151,30 +146,37 @@ Results
 _______
 
 Gender of entire sample:
+
 derived_sex
-Joint                150411
-Male                 143526
-Female                93405
-Sex Not Available     37673
+Joint     28144
+Male      26488
+Female    17290
 Name: count, dtype: int64
+
 Gender of approved applications:
+
 derived_sex
-Joint                22650
-Male                 16783
-Female               10966
-Sex Not Available     4296
+Joint     20690
+Male      15264
+Female    10013
 Name: count, dtype: int64
+
 Ratio of applications approved/total applications by Gender
+
 derived_sex
-Joint                0.150587
-Male                 0.116934
-Female               0.117403
-Sex Not Available    0.114034
+Joint     0.735148
+Male      0.576261
+Female    0.579121
 
 """
 
 """
-Calculating ratios of favoured groups
+Calculating statistical parity (ratio of positives between unfavoured and favoured groups)
+
+Favoured: Asian, Joint, White
+
+Unfavoured: 2 or more minority races, American Indian or Alaska Native, Asian, 
+Black or African American,  Joint, Native Hawaiian or Other Pacific Islander
 
 """
 
@@ -214,9 +216,8 @@ _______
 
 Ratio for favoured groups
 
-0.137937
+0.667832
 
-(from combined models:  0.086328)
 """
 
 #Ratio for 2 or more races
@@ -235,8 +236,8 @@ Ratio_Two_or_more_Favoured = ((Two_or_more_ratio)/(Ratio_approved_favoured))
 print("Ratio of two or more minority races : Favoured groups")
 print(Ratio_Two_or_more_Favoured)
 
-#Result    0.376984
-#From the two combined models: 0.401570
+#Result    0.262528
+
 
 #Hawaiian or pacific Islander
 
@@ -255,11 +256,10 @@ Hawaiian_or_PI_Favoured = ((Hawaiian_or_PI_ratio)/(Ratio_approved_favoured))
 print("Ratio of Hawaiian/Pacific Islander : Favoured groups")
 print(Hawaiian_or_PI_Favoured)
 
-# Results from this :   0.253395
-# Results from combined model:  0.171560
+# Results from this :   0.191061
 
 
-#Black or African American                    0.041480
+#Black or African American
 
 Black_approved = (df_modelled["derived_race"] == "Black or African American").value_counts(dropna=True)
 
@@ -277,8 +277,7 @@ print("Black or African american : Favoured groups")
 print(Ratio_Black_Favoured)
 
 
-# True     0.044005
-#Results from combined model: 0.480499
+# True     0.579157
 
 
 
@@ -299,5 +298,4 @@ Ratio_AI_Favoured = ((Amerindian_ratio)/(Ratio_approved_favoured))
 print("Ratio of American Indian / Alaskan Native : Favoured groups")
 print(Ratio_AI_Favoured)
 
-#results from this: True     0.319023
-#Results from combined models:  0.258566
+#results from this: 0.240195
