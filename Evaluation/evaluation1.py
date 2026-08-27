@@ -358,7 +358,7 @@ print("Ratio of men : reference groups")
 print(Ratio_men_reference)
 
 #Result:   0.966968
-#Model is very r for applications by gender
+#Model is very for applications by gender
 
 
 """
