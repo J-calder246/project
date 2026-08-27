@@ -7,6 +7,7 @@ Module for investigating the proxy problem (removing sensitive features not affe
 import pandas as pd
 """evaluation packages""" 
 from fairlearn.metrics import MetricFrame, count, equalized_odds_difference, equalized_odds_ratio,  true_positive_rate, selection_rate
+
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -23,6 +24,13 @@ df = pd.read_csv("processed_datasets/NY2019.csv")
 
 print(df.columns.to_list)
 
+"""
+_____________________________________________________________________________________________________________________
+First, we will run an LR model after removing the sensitive features to investigate the extent of the proxy problem.
+This is an observed affect when removing these features can have little to no effect on bias
+______________________________________________________________________________________________________________________
+
+"""
 
 #dropping unneeded columns and sensitive columns
 X = df.drop(columns=["approved", "action_taken", "derived_race", "derived_sex", "loan_type", "loan_purpose", 

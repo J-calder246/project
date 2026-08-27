@@ -76,26 +76,26 @@ def input_data():
 @app.route('/input_data', methods=['POST'])
 def input_data_post():
     try:
-        loan_type = request.form.get("loan_type"),
-        loan_amount = request.form.get("loan_amount"),
-        income = request.form.get("income"),
-        debt_to_income_ratio = request.form.get("debt_to_income_ratio"),
-        loan_to_value_ratio = request.form.get("loan_to_value_ratio"),
-        interest_rate = request.form.get("interest_rate"),
-        property_value = request.form.get("property_value"),
-        loan_term = request.form.get("loan_term"),
-        loan_purpose = request.form.get("loan_purpose"),
-        occupancy_type = request.form.get("occupancy_type"),
-        derived_race = request.form.get("derived_race"),
-        derived_sex = request.form.get("derived_sex"),
-        applicant_age = request.form.get("applicant_age"),
-        negative_amortization = request.form.get("negative_amortization"),
+        loan_type = request.form.get("loan_type")
+        loan_amount = request.form.get("loan_amount")
+        income = request.form.get("income")
+        debt_to_income_ratio = request.form.get("debt_to_income_ratio")
+        loan_to_value_ratio = request.form.get("loan_to_value_ratio")
+        interest_rate = request.form.get("interest_rate")
+        property_value = request.form.get("property_value")
+        loan_term = request.form.get("loan_term")
+        loan_purpose = request.form.get("loan_purpose")
+        occupancy_type = request.form.get("occupancy_type")
+        derived_race = request.form.get("derived_race")
+        derived_sex = request.form.get("derived_sex")
+        applicant_age = request.form.get("applicant_age")
+        negative_amortization = request.form.get("negative_amortization")
         rate_spread = request.form.get("rate_spread")
 
         application_data = {
-            "loan_type": float((loan_type)),
-            "loan_amount": float((loan_amount)),
-            "income": float((income)),
+            "loan_type": ((loan_type)),
+            "loan_amount": ((loan_amount)),
+            "income": ((income)),
             "debt_to_income_ratio": (debt_to_income_ratio),
             "loan_to_value_ratio": (loan_to_value_ratio),
             "interest_rate": (interest_rate),

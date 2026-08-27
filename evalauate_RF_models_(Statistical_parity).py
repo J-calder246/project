@@ -1,19 +1,17 @@
 """
-Evaluation model 1
-__________________
-
-This module will evaluate the bias that results when the data goes through both of the original models (application model ---> Delinquency model ---> prediction)
-
+Module for evaluation of the results of '2nd layer modelling' using statistical parity
+    -   Statistical parity is the ratio of cases selected positive by the model compared to the reference group
+    -   Measures such as equalised odds or disparate impact cannot be used here as 'True Positives' cannot be found through the two layer moddling system.
+    -   Assessment of true positive cases are assessed in the 1st layer evaluation module
 """
-
 
 import pandas as pd
 
 
-df_original = pd.read_csv("modelled_datasets/LR_test_data.csv")   #This dataset must be used and not a test data file like in the other statistical parity file as in the 2 layer section the data isn't split into train and test
+df_original = pd.read_csv("modelled_datasets/RF_test_Data.csv")
 print(df_original.head())
 
-df_approved_non_delinquent = pd.read_csv("modelled_datasets/approved_non_delinquent.csv")  #applications from df_original that were predicted to be approved and then predicted to be non-delinquent
+df_approved_non_delinquent = pd.read_csv("modelled_datasets/approved_non_delinquent(RF).csv")
 
 """
 First some processing
@@ -57,7 +55,6 @@ print(df_original['derived_race'].value_counts(dropna=False).head(20))
 print("Race of approved applications:")
 print(df_approved_non_delinquent['derived_race'].value_counts(dropna=False).head(20))
 
-#prints what ratio of applications by race are approved when sent through both models
 print("Ratio of applications approved/applications by race")
 print(((df_approved_non_delinquent['derived_race'].value_counts(dropna=False).head(20))/(df_original['derived_race'].value_counts(dropna=False).head(20))))
 
@@ -70,13 +67,13 @@ Results
 _______
 Ratio of applications approved by race
 derived_race
-2 or more minority races                     0.240260
-American Indian or Alaska Native             0.259386
-Asian                                        0.502641
-Black or African American                    0.378475
-Joint                                        0.578904
-Native Hawaiian or Other Pacific Islander    0.198813
-White                                        0.542509
+2 or more minority races                     0.239625
+American Indian or Alaska Native             0.197816
+Asian                                        0.520585
+Black or African American                    0.283762
+Joint                                        0.550962
+Native Hawaiian or Other Pacific Islander    0.172516
+White                                        0.418119
 """
 
 
@@ -91,16 +88,15 @@ print(df_original['derived_sex'].value_counts(dropna=False).head(20))
 print("Gender of approved applications:")
 print(df_approved_non_delinquent['derived_sex'].value_counts(dropna=False).head(20))
 
-#prints what ratio of applications by race are approved when sent through both models
 print("Ratio of applications approved/total applications by Gender")
 print(((df_approved_non_delinquent['derived_sex'].value_counts(dropna=False).head(20))/(df_original['derived_sex'].value_counts(dropna=False).head(20))))
 
 """
 Results  (no significant differences)
 
-Joint     0.572911
-Male      0.483540
-Female    0.500058
+Joint     0.475757
+Male      0.387592
+Female    0.365274
 """
 """
 Age
@@ -113,7 +109,6 @@ print(df_original['applicant_age'].value_counts(dropna=False).head(20))
 print("age groups of approved applications:")
 print(df_approved_non_delinquent['applicant_age'].value_counts(dropna=False).head(20))
 
-#prints what ratio of applications by race are approved when sent through both models
 print("Ratio of applications approved/applications by age")
 print(((df_approved_non_delinquent['applicant_age'].value_counts(dropna=False).head(20))/(df_original['applicant_age'].value_counts(dropna=False).head(20))))
 
@@ -121,13 +116,13 @@ print(((df_approved_non_delinquent['applicant_age'].value_counts(dropna=False).h
 Results
 _______
 
-25-34    0.631987
-35-44    0.550058
-45-54    0.490411
-55-64    0.474644
-65-74    0.457560
-<25      0.589552
->74      0.357553
+25-34    0.518253
+35-44    0.472638
+45-54    0.292748
+55-64    0.379710
+65-74    0.441975
+<25      0.700028
+>74      0.299090
 """
 
 
@@ -150,10 +145,10 @@ Remember 80% Rule
 """
 
 """
-Section Finding approved ratio for the race we are using as a reference group. In this case we use white as it is the largest of the groups and has high rates of positives relative to the other groups
+Section Finding reference races
 _____________________________-_
 
-Positives(white)/Applications(white)   Working it out by dividing the sums pevents smaller groups have the same impact as larger groups
+Positives(asian+joint+white)/Applications(asian+joint+white)   Working it out by dividing the sums pevents smaller groups have the same impact as larger groups
 
 """
 
@@ -184,9 +179,9 @@ print(Ratio_approved_reference)
 Results
 _______
 
-Ratio for reference group
+Ratio for reference groups
 
-0.542509
+0.667832
 
 """
 
@@ -206,7 +201,7 @@ Ratio_Two_or_more_reference = ((Two_or_more_ratio)/(Ratio_approved_reference))
 print("Ratio of two or more minority races : reference groups")
 print(Ratio_Two_or_more_reference)
 
-#Result    0.442867
+#Result    0.540562
 
 
 #Hawaiian or pacific Islander ratio
@@ -226,7 +221,7 @@ Hawaiian_or_PI_reference = ((Hawaiian_or_PI_ratio)/(Ratio_approved_reference))
 print("Ratio of Hawaiian/Pacific Islander : reference groups")
 print(Hawaiian_or_PI_reference)
 
-# Results from this :   0.366469
+# Results from this :   0.536635
 
 
 #Black or African American ratio
@@ -247,7 +242,7 @@ print("Black or African american : reference groups")
 print(Ratio_Black_reference)
 
 
-# True     0.697637
+# True     0.799868
 
 
 
@@ -268,7 +263,7 @@ Ratio_AI_reference = ((Amerindian_ratio)/(Ratio_approved_reference))
 print("Ratio of American Indian / Alaskan Native : reference groups")
 print(Ratio_AI_reference)
 
-#results from this: 0.240195
+#results from this: 0.509453
 
 #Asian
 
@@ -286,7 +281,7 @@ Ratio_Asian_reference = ((Asian_ratio)/(Ratio_approved_reference))
 print("Ratio of Asian : reference groups")
 print(Ratio_Asian_reference)
 
-# Results: 0.926511
+# Results: 0.932430
 
 #Joint
 Joint_approved = (df_approved_non_delinquent["derived_race"] == "Joint").value_counts(dropna=True)
@@ -304,25 +299,11 @@ Ratio_Joint_reference = ((Joint_ratio)/(Ratio_approved_reference))
 print("Ratio of Joint : reference groups")
 print(Ratio_Joint_reference)
 
-#result: 1.067086
+# Results: 1.051526
 
 """
-Age section
-___________
-
-Evaluating bias between men and women
-
-Results from evaluation of gender's approved  
-
-Joint     0.572911
-Male      0.483540
-Female    0.500058
-
-Will use women as the reference group as they score slightly higher
+Evaluation for gender
 """
-
-
-#Positives
 
 woman_approved = (df_approved_non_delinquent["derived_sex"] == "Female").value_counts(dropna=True)
 #applications
@@ -357,15 +338,6 @@ Ratio_men_reference = ((men_ratio)/(Ratio_approved_gender_reference))
 print("Ratio of men : reference groups")
 print(Ratio_men_reference)
 
-#Result:   0.966968
-#Model is very r for applications by gender
-
-
-"""
-Evaluation for age
-
-"""
-
 """
 Evaluation for age
 
@@ -383,10 +355,7 @@ applications_35_44 = (df_original["applicant_age"] == "35-44").value_counts(drop
 
 Ratio_approved_age_reference = ((approved_35_44)/ (applications_35_44))             
 print("Ratio for reference groups")
-print(Ratio_approved_age_reference)
-
-#Ratio 35-44:        0.550058
-#Strictly for reference
+print(Ratio_approved_age_reference)     
 
 
 
@@ -405,7 +374,7 @@ Ratio_less_than_25 = ((ratio_25)/(Ratio_approved_age_reference))
 print("Ratio of age group <25 : reference group")
 print(Ratio_less_than_25)
 
-#Result    1.071800
+#Result    .010011
 
 
 #25 - 34 ratio
@@ -425,7 +394,7 @@ reference_25_34 = ((ratio_25_34)/(Ratio_approved_age_reference))
 print("Ratio of 25-34 : reference groups")
 print(reference_25_34)
 
-# Results from this :   1.148947
+# Results from this :   1.079455
 
 
 #45 - 54 ratio
@@ -446,7 +415,7 @@ print("45-54 : reference groups")
 print(Ratio_45_54_reference)
 
 
-# Results: 0.891563
+# Results: 0.923038
 
 #55-64
 
@@ -458,12 +427,14 @@ ratio_55_64 = (approved_55_64)/(applications_55_64)
 
 print(ratio_55_64)
 
+#Ratio American indian(alaskan native)/reference
+
 Ratio_55_64_reference = ((ratio_55_64)/(Ratio_approved_age_reference))
 
 print("Ratio of 55 - 64 : reference groups")
 print(Ratio_55_64_reference)
 
-#results from this: 0.862898
+#results from this: 0.892525
 
 #65-74
 
@@ -481,7 +452,7 @@ Ratio_65_74_reference = ((ratio_65_74_ )/(Ratio_approved_age_reference))
 print("Ratio of 65 - 74 : reference groups")
 print(Ratio_65_74_reference)
 
-# Results: 0.831839
+# Results: 0.86530
 
 #over 74
 over_74_approved = (df_approved_non_delinquent["applicant_age"] == ">74").value_counts(dropna=True)
@@ -499,8 +470,4 @@ Ratio_over_74_reference = ((over_74_ratio)/(Ratio_approved_age_reference))
 print("Ratio of over 74 : reference groups")
 print(Ratio_over_74_reference)
 
-#Results: 0.650028
-
-
-
-
+#Results: 0.734881
