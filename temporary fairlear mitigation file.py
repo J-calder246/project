@@ -27,7 +27,7 @@ A = df_modelling["derived_race"]  #feature for sensitive feature
 
 
 
-X_train, X_test, y_train, y_test, A_train, A_test = train_test_split(X, y, A, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test, A_train, A_test = train_test_split(X, y, A, test_size=0.2, random_state=42, stratify=y)
 
 imputer = SimpleImputer(strategy="median")
 X_train = imputer.fit_transform(X_train)
@@ -80,7 +80,8 @@ weighted avg       0.80      0.81      0.79     58691
 
 sensitive_features_race=A_test
 metrics_dict = {"accuracy":accuracy_score, "selection rate": selection_rate,
-                "count": count, "true positive rate":true_positive_rate}
+                "count": count, "true positive rate":true_positive_rate,
+                "false_positive_rate": false_positive_rate, "false_negative_rate": false_negative_rate}
 
 
 
@@ -169,7 +170,7 @@ A = df_modelling["applicant_age"]  #feature for sensitive feature
 
 
 
-X_train, X_test, y_train, y_test, A_train, A_test = train_test_split(X, y, A, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test, A_train, A_test = train_test_split(X, y, A, test_size=0.2, random_state=42, stratify=y)
 
 imputer = SimpleImputer(strategy="median")
 X_train = imputer.fit_transform(X_train)

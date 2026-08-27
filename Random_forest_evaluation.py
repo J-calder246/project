@@ -11,7 +11,7 @@ df = pd.read_csv("modelled_datasets/RF_test_Data.csv")
 
 metrics_dict = {"accuracy": accuracy_score,
                  "selection rate": selection_rate, "count": count, "true_positive_rate": true_positive_rate, "false_negative_rate": false_negative_rate,
-                 "true_negative_rate": false_negative_rate
+                 "true_negative_rate": true_negative_rate
 }
 
 
@@ -21,8 +21,8 @@ Fairness metrics for gender
 
 
 #file imports dataset with data for the true value, predicted value and the evaulation values (gender age race) for those predictions
-y_true=df["approved"]  , #original approval values
-y_pred=df["y_pred"],   #models prediction of approval
+y_true=df["approved"]  #original approval values
+y_pred=df["y_pred"]   #models prediction of approval
 sensitive_features_gender=df["derived_sex"]
 
 

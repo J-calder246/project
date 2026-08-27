@@ -6,7 +6,7 @@ Module for investigating the proxy problem (removing sensitive features not affe
 
 import pandas as pd
 """evaluation packages""" 
-from fairlearn.metrics import MetricFrame, count, equalized_odds_difference, equalized_odds_ratio,  true_positive_rate, selection_rate
+from fairlearn.metrics import MetricFrame, count, equalized_odds_difference, equalized_odds_ratio,  true_positive_rate, selection_rate, false_positive_rate, false_negative_rate
 
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -122,7 +122,8 @@ test_data["y_pred"] = y_pred  #puts y_pred value into the test data
 
 print(test_data.columns.to_list)
 
-metrics_dict = {"accuracy":accuracy_score, "selection rate": selection_rate, "count": count, "true positive rate":true_positive_rate}
+metrics_dict = {"accuracy":accuracy_score, "selection rate": selection_rate, "count": count, "true positive rate":true_positive_rate,
+                "false_positive_rate": false_positive_rate, "false_negative_rate": false_negative_rate}
 
 
 sensitive_features_race=test_data["derived_race"]
@@ -259,7 +260,7 @@ print(X_CR.columns.to_list)
 
 #Make model with the preprcoessed data
 
-X_train, X_test, y_train, y_test = train_test_split(X_CR, y, test_size = 0.2, random_state=69)
+X_train, X_test, y_train, y_test = train_test_split(X_CR, y, test_size = 0.2, random_state=42, stratify=y)
 
 CR_test_index = X_test.index
 

@@ -15,7 +15,7 @@ import json #for formatting output
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from fairlearn.postprocessing import ThresholdOptimizer, plot_threshold_optimizer
 from sklearn.metrics import accuracy_score, classification_report
 
@@ -48,13 +48,13 @@ X = imputer.fit_transform(X)
 
 
 
-X_train, X_test, y_train, y_test, A_train, A_test = train_test_split(X, y, A, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test, A_train, A_test = train_test_split(X, y, A, test_size=0.2, random_state=42, stratify=y)
 
 
 
 #setting up threshold optimiser (true positive rate)  (can be used to improve disparate impact score with this method)
 
-thresholded_optimiser = ThresholdOptimizer(estimator=RandomForestClassifier(class_weight="balanced", random_state=42),
+thresholded_optimiser = ThresholdOptimizer(estimator=LogisticRegression(max_iter=500, solver='lbfgs'),
                                            constraints="true_positive_rate_parity",
                                            objective="balanced_accuracy_score",  #specifies a accuracy prioity from the model
                                            predict_method='predict_proba',
@@ -71,9 +71,9 @@ threshold_rules_by_group = thresholded_optimiser.interpolated_thresholder_.inter
 #Saving model
 import joblib
 
-joblib.dump(thresholded_optimiser, "mitigated_models/threshold_optimiser_race_RF.pkl")
+joblib.dump(thresholded_optimiser, "mitigated_models/threshold_optimiser_race_LR.pkl")
 
-
+thresholded_optimiser= joblib.load("mitigated_models/threshold_optimiser_race_LR.pkl")
 
 accuracy = accuracy_score(y_test, y_pred)
 classification_report_race = classification_report(y_test, y_pred)
@@ -87,6 +87,71 @@ print(json.dumps(threshold_rules_by_group, indent=4, default=str))
 
 
 
+"""
+ORIGINAL
+----------
+
+
+
+
+OUTPUT   
+----------
+accuracy score race:  0.660595321258796
+classification report:                precision    recall  f1-score   support
+
+       False       0.42      0.64      0.50     15885
+        True       0.83      0.67      0.74     42806
+
+    accuracy                           0.66     58691
+   macro avg       0.63      0.65      0.62     58691
+weighted avg       0.72      0.66      0.68     58691
+
+Fairness after prediction with threshold optimiser:
+{
+    "2 or more minority races": {
+        "p0": 0.30258064516129,
+        "operation0": "[>0.7454059943997791]",
+        "p1": 0.69741935483871,
+        "operation1": "[>0.7039550180191518]"
+    },
+    "American Indian or Alaska Native": {
+        "p0": 0.817981132075471,
+        "operation0": "[>0.7001817461200499]",
+        "p1": 0.18201886792452904,
+        "operation1": "[>0.6206982427132273]"
+    },
+    "Asian": {
+        "p0": 0.6968201754385949,
+        "operation0": "[>0.7616763762999366]",
+        "p1": 0.30317982456140513,
+        "operation1": "[>0.7569031310146412]"
+    },
+    "Black or African American": {
+        "p0": 0.18742724458204277,
+        "operation0": "[>0.7442102201114098]",
+        "p1": 0.8125727554179573,
+        "operation1": "[>0.7379503502101671]"
+    },
+    "Joint": {
+        "p0": 0.7488545454545451,
+        "operation0": "[>0.7502663522790776]",
+        "p1": 0.2511454545454549,
+        "operation1": "[>0.7424226814423645]"
+    },
+    "Native Hawaiian or Other Pacific Islander": {
+        "p0": 0.6618113207547166,
+        "operation0": "[>0.7184808674461409]",
+        "p1": 0.3381886792452834,
+        "operation1": "[>0.681123060155343]"
+    },
+    "White": {
+        "p0": 0.016409003831414415,
+        "operation0": "[>0.7069509623702396]",
+        "p1": 0.9835909961685856,
+        "operation1": "[>0.7008896300472085]"
+    }
+}
+"""
 
 """
 Same process for age
@@ -95,11 +160,11 @@ Same process for age
 
 B = df['applicant_age']
 
-X_train, X_test, y_train, y_test_age, B_train, B_test = train_test_split(X, y, B, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test_age, B_train, B_test = train_test_split(X, y, B, test_size=0.2, random_state=42, stratify=y)
 
 #setting up threshold optimiser (true positive rate)  (can be used to improve disparate impact score with this method)
 
-thresholded_optimiser_age = ThresholdOptimizer(estimator=RandomForestClassifier(class_weight="balanced", random_state=42),
+thresholded_optimiser_age = ThresholdOptimizer(estimator=LogisticRegression(max_iter=500, solver='lbfgs'),
                                            constraints="true_positive_rate_parity",
                                            objective="balanced_accuracy_score",  #specifies a accuracy prioity from the model
                                            predict_method='predict_proba',
@@ -115,8 +180,9 @@ threshold_rules_by_age_group = thresholded_optimiser_age.interpolated_thresholde
 
 
 
-joblib.dump(thresholded_optimiser_age, "mitigated_models/thresholded_optimiser_age_RF.pkl")
+joblib.dump(thresholded_optimiser_age, "mitigated_models/thresholded_optimiser_age_LR.pkl")
 
+thresholded_optimiser_age = joblib.load("mitigated_models/thresholded_optimiser_age_LR.pkl")
 
 accuracy = accuracy_score(y_test_age, y_pred_age)
 classification_report_age = classification_report(y_test_age, y_pred_age)
@@ -141,6 +207,45 @@ classification report:                precision    recall  f1-score   support
    macro avg       0.62      0.65      0.61     58691
 weighted avg       0.71      0.65      0.67     58691
 
+Fairness after prediction with threshold optimiser:
+{
+    "35-44": {
+        "p0": 0.1997153439153421,
+        "operation0": "[>0.7570948254612533]",
+        "p1": 0.8002846560846579,
+        "operation1": "[>0.7523378429667906]"
+    },
+    "45-54": {
+        "p0": 0.0034795221843005363,
+        "operation0": "[>0.7304004127271055]",
+        "p1": 0.9965204778156994,
+        "operation1": "[>0.7122080519385579]"
+    },
+    "55-64": {
+        "p0": 0.1768053571428525,
+        "operation0": "[>0.6899955308946297]",
+        "p1": 0.8231946428571475,
+        "operation1": "[>0.6837880730476227]"
+    },
+    "65-74": {
+        "p0": 0.8934579439252237,
+        "operation0": "[>0.6765173815767052]",
+        "p1": 0.10654205607477629,
+        "operation1": "[>0.6738983589896522]"
+    },
+    "<25": {
+        "p0": 0.12226460481099664,
+        "operation0": "[>0.7614373737302991]",
+        "p1": 0.8777353951890033,
+        "operation1": "[>0.7411145749802928]"
+    },
+    ">74": {
+        "p0": 0.9667027027026907,
+        "operation0": "[>0.6746973818626758]",
+        "p1": 0.03329729729730935,
+        "operation1": "[>0.6714295052488348]"
+    }
+}
 
 """
 
@@ -162,10 +267,10 @@ from sklearn.metrics import accuracy_score  #accuracy score for original model
 sensitive_features_race_mitigated = df['derived_race'].iloc[y_test.index]  #sets sensitive feature to have same shape as the test data
 
 
-metrics_dict = {"accuracy": accuracy_score,
-                "true_positive_rate": true_positive_rate,  #getting true positive as that was the target or the algorithm
-                "selection_rate": selection_rate,
-                }
+metrics_dict = {"accuracy":accuracy_score, "selection rate": selection_rate,
+                 "count": count, "true positive rate":true_positive_rate,
+                 "false_positive_rate": false_positive_rate, "false_negative_rate": false_negative_rate}
+
 
 
 
@@ -237,7 +342,8 @@ sensitive_features_age_mitigated = df['applicant_age'].iloc[y_test.index]  #sets
 
 metrics_dict = {"accuracy": accuracy_score,
                 "true_positive_rate": true_positive_rate,  #getting true positive as that was the target or the algorithm
-                "selection_rate": selection_rate,
+                "selection_rate": selection_rate, "false_positive_rate": false_positive_rate, 
+                "false_negative_rate": false_negative_rate
                 }
 
 
@@ -265,15 +371,24 @@ print(equalized_odds_difference(
 
 """
 metrics frame by age
-               accuracy  true_positive_rate  selection_rate
-applicant_age                                              
-35-44          0.658737            0.657967        0.587891
-45-54          0.651867            0.658060        0.575282
-55-64          0.645457            0.655054        0.571148
-65-74          0.634518            0.646419        0.570894
-<25            0.649098            0.653246        0.609570
->74            0.657873            0.663313        0.546064
+               accuracy  true_positive_rate  selection_rate  false_positive_rate  false_negative_rate
+applicant_age                                                                                        
+25-34          0.687215            0.695656        0.646523             0.361713             0.304344
+35-44          0.677697            0.685228        0.613408             0.349933             0.314772
+45-54          0.660347            0.681505        0.601077             0.394101             0.318495
+55-64          0.655682            0.685832        0.602340             0.412773             0.314168
+65-74          0.656554            0.687165        0.606764             0.416055             0.312835
+<25            0.687151            0.705686        0.656425             0.406780             0.294314
+>74            0.663252            0.681486        0.570209             0.369617             0.318514
 Equalised odds difference for age
-0.0549201955101864
+0.06612175574544876
 
 """
+
+"""
+Exponentiated gradient on all three
+____________________________________
+
+"""
+
+

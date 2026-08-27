@@ -16,7 +16,7 @@ df = pd.read_csv("modelled_datasets/LR_test_data.csv")
 
 #Setting up 'MetricFrame'  https://fairlearn.org/main/api_reference/generated/fairlearn.metrics.MetricFrame.html 
 
-metrics_dict = {"accuracy": accuracy_score, "selection rate": selection_rate, "count": count, "true_positive_rate": true_positive_rate}
+metrics_dict = {"accuracy": accuracy_score, "selection rate": selection_rate, "count": count, "true_positive_rate": true_positive_rate, "false_negative_rate": false_negative_rate, "false_positive_rate": false_positive_rate}
 
 
 """
@@ -25,8 +25,8 @@ Fairness metrics for gender
 
 
 #file imports dataset with data for the true value, predicted value and the evaulation values (gender age race) for those predictions
-y_true=df["approved"]  , #original approval values
-y_pred=df["y_pred"],   #models prediction of approval
+y_true=df["approved"] #original approval values
+y_pred=df["y_pred"]   #models prediction of approval
 sensitive_features_gender=df["derived_sex"]
 
 
@@ -56,13 +56,13 @@ print(equalized_odds_difference(
 Results
 _______
 metrics frame by gender
-             accuracy  selection rate    count
-derived_sex                                   
-Female       0.577671        0.731771  14510.0
-Joint        0.736025        0.780736  23059.0
-Male         0.567134        0.722659  21122.0
+             accuracy  selection rate    count  true_positive_rate
+derived_sex                                                       
+Female       0.714691        0.579121  17290.0            0.703298
+Joint        0.770040        0.735148  28144.0            0.813669
+Male         0.707528        0.576261  26488.0            0.697722
 Equalised odds difference for gender
-0.14780810866746355
+0.15477176844450669
 """
 
 """
@@ -100,17 +100,17 @@ Results
 _________
 
 metrics frame by Race
-                                           accuracy  selection rate    count
-derived_race                                                                
-2 or more minority races                   0.194175        0.582524    103.0
-American Indian or Alaska Native           0.161290        0.689516    248.0
-Asian                                      0.615758        0.773152   5356.0
-Black or African American                  0.400665        0.642983   5109.0
-Joint                                      0.708989        0.767416    890.0
-Native Hawaiian or Other Pacific Islander  0.116438        0.767123    292.0
-White                                      0.669544        0.756452  46693.0
+                                           accuracy  selection rate    count  true_positive_rate
+derived_race                                                                                    
+2 or more minority races                   0.623377        0.175325    154.0            0.253968
+American Indian or Alaska Native           0.617747        0.160410    293.0            0.248062
+Asian                                      0.775381        0.642606   6816.0            0.785528
+Black or African American                  0.621695        0.386780   5900.0            0.506749
+Joint                                      0.767784        0.720360   1223.0            0.808050
+Native Hawaiian or Other Pacific Islander  0.667656        0.127596    337.0            0.251799
+White                                      0.740852        0.669715  57199.0            0.765812
 Equalised odds difference for race
-0.5110852110852111
+0.5599875200998392
 """
 
 """
@@ -132,7 +132,7 @@ age_MF = MetricFrame(
 print("metrics frame by age")
 print(age_MF.by_group)
 
-print("Equalised odds difference for age")
+print("Equalised odds difference for age in original model")
 
 print(equalized_odds_difference(
     y_true=y_true  , #original approval values
@@ -146,17 +146,17 @@ Results
 _______
 
 metrics frame by age
-               accuracy  selection rate    count
-applicant_age                                   
-35-44          0.738452        0.792233  16995.0
-45-54          0.625667        0.737815  17049.0
-55-64          0.568465        0.728677  13788.0
-65-74          0.562900        0.711158   7035.0
-<25            0.867238        0.811563   1401.0
->74            0.455221        0.683038   2423.0
-
+               accuracy  selection rate    count  true_positive_rate
+applicant_age                                                       
+25-34          0.848123        0.853720  13399.0            0.912891
+35-44          0.766086        0.705575  17220.0            0.801038
+45-54          0.698094        0.580300  16843.0            0.692472
+55-64          0.676765        0.516202  13764.0            0.637731
+65-74          0.661067        0.498526   6786.0            0.614506
+<25            0.829037        0.860244   1474.0            0.924749
+>74            0.588259        0.348112   2436.0            0.449708
 Equalised odds difference for age
-0.48032064284599785
+0.4750411820496182
 """
 
 """
@@ -206,7 +206,7 @@ X = X.drop(columns=["derived_race", 'applicant_age', 'derived_sex'])
 
 
 
-X_train, X_test, y_train, y_test, A_train, A_test = train_test_split(X, y, A, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test, A_train, A_test = train_test_split(X, y, A, test_size=0.2, random_state=42, stratify=y)
 
 imputer = SimpleImputer(strategy="median")
 X_train = imputer.fit_transform(X_train)
@@ -251,12 +251,12 @@ exponentiated_gradient_LR = joblib.load("mitigated_models/exponentiated_gradient
 """
 precision    recall  f1-score   support
 
-       False       0.57      0.47      0.51     15885
-        True       0.81      0.87      0.84     42806
+       False       0.54      0.41      0.47     17726
+        True       0.82      0.89      0.85     54196
 
-    accuracy                           0.76     58691
-   macro avg       0.69      0.67      0.68     58691
-weighted avg       0.75      0.76      0.75     58691
+    accuracy                           0.77     71922
+   macro avg       0.68      0.65      0.66     71922
+weighted avg       0.75      0.77      0.76     71922
 
 """
 
@@ -309,16 +309,17 @@ Mitigated results
 
 
 metrics frame by Race
-               accuracy  selection rate    count
-applicant_age                                   
-35-44          0.777334        0.776639  17277.0
-45-54          0.775459        0.761114  16870.0
-55-64          0.776277        0.755430  13767.0
-65-74          0.790125        0.754426   6947.0
-<25            0.767684        0.740638   1442.0
->74            0.783920        0.687186   2388.0
+               accuracy  selection rate    count  true_positive_rate
+applicant_age                                                       
+25-34          0.797829        0.809976  13172.0            0.856329
+35-44          0.790847        0.817859  17437.0            0.887316
+45-54          0.765191        0.798505  16720.0            0.891371
+55-64          0.750664        0.813339  13929.0            0.906205
+65-74          0.740311        0.826100   6889.0            0.902600
+<25            0.726955        0.800978   1432.0            0.816054
+>74            0.697397        0.815194   2343.0            0.898474
 Equalised odds difference for age
-0.12717942834955576
+0.18329660142379878
 
 """
 
@@ -374,17 +375,58 @@ _________________
 Mitigated results
 
 metrics frame by Race
-                                           accuracy  selection rate    count
-derived_race                                                                
-2 or more minority races                   0.733813        0.431655    139.0
-American Indian or Alaska Native           0.766537        0.455253    257.0
-Asian                                      0.785270        0.767565   5309.0
-Black or African American                  0.781244        0.710275   5129.0
-Joint                                      0.784797        0.683084    934.0
-Native Hawaiian or Other Pacific Islander  0.792517        0.493197    294.0
-White                                      0.776898        0.770551  46629.0
+                                           accuracy  selection rate    count  true_positive_rate
+derived_race                                                                                    
+2 or more minority races                   0.591463        0.829268    164.0            0.936709
+American Indian or Alaska Native           0.457680        0.846395    319.0            0.843972
+Asian                                      0.786335        0.816879   6908.0            0.910219
+Black or African American                  0.719670        0.798830   5811.0            0.915128
+Joint                                      0.704467        0.782646   1164.0            0.813260
+Native Hawaiian or Other Pacific Islander  0.481050        0.816327    343.0            0.869565
+White                                      0.777481        0.812333  57213.0            0.881515
 Equalised odds difference for race
-0.24374769651977046
+0.2906328134118846
+"""
+
+
+"""
+Actual results exponentiated gradient
+
+Classification Report Exponentiated gradient:
+              precision    recall  f1-score   support
+
+       False       0.52      0.41      0.46     17755
+        True       0.82      0.88      0.85     54167
+
+    accuracy                           0.76     71922
+   macro avg       0.67      0.64      0.65     71922
+weighted avg       0.75      0.76      0.75     71922
+
+metrics frame by Race
+               accuracy  selection rate    count  true_positive_rate  false_negative_rate  false_positive_rate
+applicant_age                                                                                                 
+25-34          0.788417        0.802075  13399.0            0.847383             0.152617             0.545500
+35-44          0.787921        0.808130  17220.0            0.880430             0.119570             0.546649
+45-54          0.752538        0.805142  16843.0            0.885559             0.114441             0.595024
+55-64          0.745278        0.805870  13764.0            0.893383             0.106617             0.601164
+65-74          0.730622        0.812408   6786.0            0.889617             0.110383             0.634905
+<25            0.729986        0.816825   1474.0            0.836957             0.163043             0.730216
+>74            0.690476        0.824713   2436.0            0.907203             0.092797             0.682682
+Equalised odds difference for age
+0.18471607597065065
+metrics frame by Race
+                                           accuracy  selection rate    count  true_positive_rate  false_negative_rate  false_positive_rate
+derived_race                                                                                                                              
+2 or more minority races                   0.441558        0.746753    154.0            0.730159             0.269841             0.758242
+American Indian or Alaska Native           0.511945        0.771331    293.0            0.821705             0.178295             0.731707
+Asian                                      0.764525        0.807218   6816.0            0.890559             0.109441             0.579639
+Black or African American                  0.705254        0.803559   5900.0            0.905238             0.094762             0.632058
+Joint                                      0.704824        0.809485   1223.0            0.824561             0.175439             0.751969
+Native Hawaiian or Other Pacific Islander  0.465875        0.786350    337.0            0.805755             0.194245             0.772727
+White                                      0.772251        0.807759  57199.0            0.875515             0.124485             0.577965
+Equalised odds difference for race
+0.1947618216716105
+
 """
 
 
