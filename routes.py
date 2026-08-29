@@ -3,9 +3,13 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 import sqlite3
 import pandas as pd
 from config import Config
-from databases import input_collection
+from databases import input_collection, input_collection_encoded
 import joblib
 from bson.objectid import ObjectId
+import os
+from sklearn.pipeline import Pipeline
+import numpy as np
+
 
 
 """
@@ -58,7 +62,7 @@ app.secret_key = 'my_secret_key'
 def home():
     return render_template('Home.html')
 
-@app.route("/models_home")
+@app.route("/models_home", methods=["POST"])
 def models_home():
      return render_template("models_home.html")
 
@@ -101,23 +105,28 @@ def input_data_post():
             "interest_rate": (interest_rate),
             "property_value": (property_value),
             "loan_term": (loan_term),
-            "loan_purpose": int((loan_purpose)),
-            "occupancy_type": int((occupancy_type)),
+            "loan_purpose": ((loan_purpose)),
+            "occupancy_type": ((occupancy_type)),
             "derived_race": (derived_race),
             "derived_sex": (derived_sex),
             "applicant_age": (applicant_age),
-            "negative_amortization": int((negative_amortization)),
+            "negative_amortization": ((negative_amortization)),
             "rate_spread": (rate_spread)
                     }
 
                     #inserting data
         input_collection.insert_one(application_data)
         flash("Application successfully stored.", "success")
+
         return redirect(url_for("datalist"))
     except Exception as error:
         print(type(error).__name__, error)
         flash(f"Insert failed: {error}", "danger")
-        return redirect(url_for("datalist"))
+        return redirect(url_for("home"))
+
+
+
+
 
 @app.route("/select_id", methods=['POST'])
 def select_id():
@@ -134,40 +143,135 @@ def selected_application():
 
     if not applicant_data:
         return "applicant not found"
+    
+    
 
     return render_template("selected_application.html", applicant_data = applicant_data)
 
-@app.route("/process_application", methods=["POST"])
-def process_data():
-    df= pd.read_html(selected_application)
-    #Preprocessing data with a similar process as in processing_NY_loan_application 
-    #but without unecessary part
-    columns_names = [
-        "_id",
-        "loan_type",
-        "loan_amount",
-        "income",
-        "debt_to_income_ratio",
-        "loan_to_value_ratio",
-        "interest_rate",
-        "property_value",
-        "loan_term",
-        "loan_purpose",
-        "occupancy_type",
-        "derived_race",
-        "derived_sex",
-        "applicant_age",
-        "negative_amortization",
-        "rate_spread"]
-    df = pd.read_html(df,
-        header='columns_names'
-        )
 
+
+
+#defining a process for processing the data into a form the models are used to
+
+def process_data(applicant_data):
+    
+    df = pd.DataFrame([applicant_data])
+    
+    print(df.head())
+
+    #drop id
+    df = df.drop(columns=["_id"])
+    
+    #processing dataframe
+    
+    columns_names = [
+                "_id",
+                "loan_type",
+                "loan_amount",
+                "income",
+                "debt_to_income_ratio",
+                "loan_to_value_ratio",
+                "interest_rate",
+                "property_value",
+                "loan_term",
+                "loan_purpose",
+                "occupancy_type",
+                "derived_race",
+                "derived_sex",
+                "applicant_age",
+                "negative_amortization",
+                "rate_spread"]
+            
+    df = pd.DataFrame(df, columns= columns_names)
+        
+    debt_to_income_mode = {
+            "<20%": 10,   
+            "20%-<30%": 25,
+            "30%-<36%": 33,
+            "36%": 36,
+            "37%": 37,
+            "38%": 38,
+            "39%": 39,
+            "40%": 40,
+            "41%": 41,
+            "42%": 42,
+            "43%": 43,
+            "44%": 44,
+            "45%": 45,
+            "46%": 46,
+            "47%": 47,
+            "48%": 48,
+            "49%": 49,
+            "50%-60%": 55,
+            ">60%": 65,  
+            "Exempt": None
+            }
+        
+    df["debt_to_income_ratio"] = df["debt_to_income_ratio"].map(debt_to_income_mode)
+
+
+        #as we are encoding a single row which won't have all the datapoints needed to encode, we can use "all categories" to still create these columns
+    all_categories_race = ['2 or more minority races',
+                           'American Indian or Alaska Native', 'Asian',
+                           'Black or African American', 'Joint',
+                           'Native Hawaiian or Other Pacific Islander', 'White']
+    all_categories_gender = ['Female', 'Joint', 'Male']
+    all_categories_loan_type = ['1', '2', '3', '4']
+    all_categories_loan_purpose = ['1', '2', '4', "5", '31', '32']
+    all_categories_negative_amortiziation = ['1', '2', '1111']
+    all_categories_applicant_age = ['25-34', '35-44', '45-54', '55-64', '65-74', '<25', '>74',]
+    all_categories_occupancy_type = ['1', '2', '3']
+
+
+    df['derived_race'] = pd.Categorical(df['derived_race'], categories=all_categories_race)
+    df['derived_sex'] = pd.Categorical(df['derived_sex'], categories=all_categories_gender)
+    df['loan_type'] = pd.Categorical(df['loan_type'], categories=all_categories_loan_type)
+    df['loan_purpose'] = pd.Categorical(df['loan_purpose'], categories=all_categories_loan_purpose)
+    df['negative_amortization'] = pd.Categorical(df['negative_amortization'], categories=all_categories_negative_amortiziation)
+    df['applicant_age'] = pd.Categorical(df['applicant_age'], categories=all_categories_applicant_age)
+    df['occupancy_type'] = pd.Categorical(df['occupancy_type'], categories=all_categories_occupancy_type)
+    
+        
     cols_to_encode = ["derived_race", "derived_sex", "loan_type", "loan_purpose", "negative_amortization",
-                    "applicant_age", "occupancy_type"]
-    df = pd.get_dummies(df, cols_to_encode, drop_first=True)
-    print(df.head)
-    return render_template("models_home.html")
+                            "applicant_age", "occupancy_type"]
+    
+    df = pd.get_dummies(df, columns=cols_to_encode)
+    
+   
+
+    print(df.head())
+    print(df.columns.to_list)
+
+#useful bit for checking the data
+    directory = "processed_datasets" 
+    os.makedirs(directory, exist_ok=True)
+    
+    output_file_path = os.path.join(directory, "experimental_flask_df")
+    df.to_csv(output_file_path, index=False)
+
+       
+    return df
+
+
+@app.route("/logistic")
+def logistic():
+    selected_id = session.get("selected_application")
+    print("selected ID:", selected_id)
+        
+    applicant_data = input_collection.find_one({"_id": ObjectId(selected_id)})  #finds data according to application
+        
+    if not applicant_data:
+        return "applicant not found"
+
+    df = process_data(applicant_data)
+    X = pd.DataFrame(df)
+
+    X = X.drop(columns=["_id", "interest_rate", "rate_spread"])
+    
+    print(X.head())
+    prediction = model_LR_1st.predict(X)[0]
+    return render_template("logistic.html", prediction_text= f"model prediction: {prediction}")
+
     
     
 
@@ -219,7 +323,4 @@ def convert_data(applicant_id):
     
         
 
-@app.route('/logistic')
-def LR_page():
-    return render_template('logistic.html')
 

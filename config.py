@@ -18,6 +18,7 @@ class Config:
     
     MONGO_DB = "mortgageDB"
     INPUT_COLLECTION = "inputcollection"
+    INPUT_COLLECTION_ENCODED = "inputcollection(with dummies)"
     
 
 

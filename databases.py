@@ -5,6 +5,7 @@ from pymongo import MongoClient
 _client = MongoClient(Config.MONGO_URI)
 _mdb = _client[Config.MONGO_DB]
 input_collection = _mdb[Config.INPUT_COLLECTION]
+input_collection_encoded = _mdb[Config.INPUT_COLLECTION_ENCODED]
 
 """
 #testing

@@ -179,9 +179,5 @@ os.makedirs(directory, exist_ok=True)
 output_file_path = os.path.join(directory, "approved_non_delinquent(RF).csv")
 non_delinquent_applications.to_csv(output_file_path, index=False)
 
-directory = "modelled_datasets" 
-os.makedirs(directory, exist_ok=True)
 
-output_file_path = os.path.join(directory, "approved_but_delinquent(RF).csv")
-delinquent_applications.to_csv(output_file_path, index=False)
 

@@ -5,7 +5,28 @@
     <p>Loan Type</p><input type="text" name="loan_type" id="loan_type">
     <p>Loan Amount</p><input type="text" name="loan_amount" id="loan_amount">
     <p>Income</p><input type="text" name="income" id="income">
-    <p>Debt-to-Income Ratio</p><input type="text" name="debt_to_income_ratio" id="debt_to_income_ratio">
+    <p>Debt to income ratio</p>
+    <select name="debt_to_income_ratio" id="debt_to_income_ratioe">
+        <option value="<20%">less than 20%</option>
+        <option value="20%-<30%">20%-30%</option>
+        <option value="30%-<36%">30%-36%</option>
+        <option value="37%">37%</option>
+        <option value="38%">38%</option>
+        <option value="39%">39%</option>
+        <option value="40%">40%</option>
+        <option value="41%">41%</option>
+        <option value="42%">42%</option>
+        <option value="43%">43%</option>
+        <option value="44%">44%</option>
+        <option value="45%">45%</option>
+        <option value="46%">46%</option>
+        <option value="47%">47%</option>
+        <option value="48%">48%</option>
+        <option value="49%">49%</option>
+        <option value="50%-60%">50%-60%</option>
+        <option value=">60%">over 60%</option>
+    </select>
+
     <p>Loan-to-Value Ratio</p><input type="text" name="loan_to_value_ratio" id="loan_to_value_ratio">
     <p>Interest Rate</p><input type="text" name="interest_rate" id="interest_rate">
     <p>Property Value</p><input type="text" name="property_value" id="property_value">
@@ -37,7 +58,7 @@
         <option value="45-54">45-54</option>
         <option value="55-64">55-64</option>
         <option value="65-74">65-74</option>
-        <option value=">75">>75</option>
+        <option value=">74">>74</option>
         
     </select>
     <p>Negative Amortization</p><input type="text" name="negative_amortization" id="negative_amortization" min="0">
