@@ -42,7 +42,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 test_index = X_test.index   #save X values so they arent messed up when scaled later on
 
-#standardising features with scaler (gives attributes equal weighting and influence)
+
 
 #Imputing missing values (change later if this is not suitable)
 

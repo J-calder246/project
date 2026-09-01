@@ -4,6 +4,7 @@ _______________________________
 
 This section will evlauate the bias of the first model which models the approval of mortgage application to investigate to what extent that thing is suseptable to bias
 
+The metric used in this section is statistical parity, the ratio of approved application between the selected group and a reference group from each demographic. 
 """
 
 

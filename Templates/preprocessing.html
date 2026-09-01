@@ -10,11 +10,11 @@
         </form>
 
         {% if prediction_text %}
-            <h3 class="result">{{ prediction_text }}</h3>
-            <h4 class="result">{{ probability_text }}</h4>
+            <h3 class="result">{{ prediction_text_CR }}</h3>
+            <h4 class="result">{{ probability_text_CR }}</h4>
+            <h3 class="result">{{ prediction_textNSF }}</h3>
+            <h4 class="result">{{ probability_text_NSF }}</h4
         {% endif %}
-
-        
 
 <div class="cards">
     <div class="card">
@@ -24,5 +24,3 @@
     </div>
 
 {% endblock %}
-
-

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Applicant Data{% endblock %}
+
+{% block content %}
+
+
+<h1>Predict application with logistic regression</h1>
+
+<input type="submit" value="Predict">
+        </form>
+
+        {% if prediction_text %}
+            <h3 class="result">{{ prediction_text }}</h3>
+            <h4 class="result">{{ probability_text }}</h4>
+        {% endif %}
+        
+        {% if prediction_XG_text %}
+            <h3 class="result">{{ prediction_XG_text }}</h3>
+            
+        {% endif %}
+
+        {% if prediction_text_TOR %}
+            <h2 class="result">{{ prediction_text_TOR }}</h2>
+            
+        {% endif %}
+
+        {% if prediction_text_TOA %}
+            <h2 class="result">{{ prediction_text_TOA }}</h2>
+            
+        {% endif %}
+
+
+
+{% endblock %}

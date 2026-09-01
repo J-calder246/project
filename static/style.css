@@ -1,0 +1,54 @@
+table{
+    border-collapse: collapse;
+    width: 100%
+     }
+th, td {
+        border: 1px solid black;
+        padding: 3px
+     }    
+
+
+h1 {
+    color: red
+}
+
+.head {
+    color:aliceblue;
+}
+
+.topnav {
+    background-color:indigo
+}
+
+.topnav a {
+    color: white;
+    text-align: center;
+    font-size: 18px;
+}
+
+body {
+    background-color: whitesmoke
+
+}
+
+
+
+
+.button {
+  transition-duration: 0.4s;
+  color: blueviolet
+}
+
+.button:hover {
+  background-color: blueviolet; /* Green */
+  color: white;
+}
+
+.card {
+    align-items: center;
+    background-color:silver;
+    justify-content: center;
+    border: 2px solid black;
+    margin: 8px;
+}
+

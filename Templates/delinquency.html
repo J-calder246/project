@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Applicant Data{% endblock %}
+
+{% block content %}
+
+
+<h1>Prediction using exponentiated gradient</h1>
+
+<input type="submit" value="Predict">
+        </form>
+
+        {% if prediction_LR_text %}
+            <h3 class="result">{{ prediction_LR_text }}</h3>
+        {% endif %}
+
+        {% prediction_text_RF %}
+            <h3 class="result">{{ prediction_delinquency_RF }}</h3>
+        {% endif %}
+        
+
+
+{% endblock %}

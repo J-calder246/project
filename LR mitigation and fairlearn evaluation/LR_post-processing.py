@@ -25,11 +25,14 @@ df = pd.read_csv("processed_datasets/NY2019.csv")
 
 y = df['approved']
 X = df.drop(columns=["approved", "action_taken", 'loan_purpose', 'occupancy_type', 'derived_race', 'derived_sex',
-       'applicant_age', 'negative_amortization'
+       'applicant_age', 'negative_amortization', 'loan_type'
        ])
 X = X.drop(columns=["interest_rate", "rate_spread"])
 
 imputer = SimpleImputer(strategy= "median")
+
+
+print(X.columns.to_list)
 
 
 
@@ -62,18 +65,18 @@ thresholded_optimiser = ThresholdOptimizer(estimator=LogisticRegression(max_iter
 )
 
 #fitting data to threshold optimiser
-thresholded_optimiser.fit(X_train, y_train, sensitive_features=A_train)  #sets up the model to post-process the predictions in favour of race (A_train)
+thresholded_optimiser_race =thresholded_optimiser.fit(X_train, y_train, sensitive_features=A_train)  #sets up the model to post-process the predictions in favour of race (A_train)
 
 #making predicitons
-y_pred =thresholded_optimiser.predict(X_test, sensitive_features=A_test, random_state=42)  
-threshold_rules_by_group = thresholded_optimiser.interpolated_thresholder_.interpolation_dict    #sets up the threshold target for each group
+y_pred =thresholded_optimiser_race.predict(X_test, sensitive_features=A_test, random_state=42)  
+threshold_rules_by_group = thresholded_optimiser_race.interpolated_thresholder_.interpolation_dict    #sets up the threshold target for each group
 
 #Saving model
 import joblib
 
-joblib.dump(thresholded_optimiser, "mitigated_models/threshold_optimiser_race_LR.pkl")
+joblib.dump(thresholded_optimiser_race, "mitigated_models/threshold_optimiser_race_LR.pkl")
 
-thresholded_optimiser= joblib.load("mitigated_models/threshold_optimiser_race_LR.pkl")
+thresholded_optimiser_race = joblib.load("mitigated_models/threshold_optimiser_race_LR.pkl")
 
 accuracy = accuracy_score(y_test, y_pred)
 classification_report_race = classification_report(y_test, y_pred)
@@ -82,8 +85,6 @@ print("accuracy score race: ", accuracy)
 print("classification report: ", classification_report_race)
 
 
-print("Fairness after prediction with threshold optimiser:")
-print(json.dumps(threshold_rules_by_group, indent=4, default=str))
 
 
 
@@ -106,51 +107,7 @@ classification report:                precision    recall  f1-score   support
    macro avg       0.63      0.65      0.62     58691
 weighted avg       0.72      0.66      0.68     58691
 
-Fairness after prediction with threshold optimiser:
-{
-    "2 or more minority races": {
-        "p0": 0.30258064516129,
-        "operation0": "[>0.7454059943997791]",
-        "p1": 0.69741935483871,
-        "operation1": "[>0.7039550180191518]"
-    },
-    "American Indian or Alaska Native": {
-        "p0": 0.817981132075471,
-        "operation0": "[>0.7001817461200499]",
-        "p1": 0.18201886792452904,
-        "operation1": "[>0.6206982427132273]"
-    },
-    "Asian": {
-        "p0": 0.6968201754385949,
-        "operation0": "[>0.7616763762999366]",
-        "p1": 0.30317982456140513,
-        "operation1": "[>0.7569031310146412]"
-    },
-    "Black or African American": {
-        "p0": 0.18742724458204277,
-        "operation0": "[>0.7442102201114098]",
-        "p1": 0.8125727554179573,
-        "operation1": "[>0.7379503502101671]"
-    },
-    "Joint": {
-        "p0": 0.7488545454545451,
-        "operation0": "[>0.7502663522790776]",
-        "p1": 0.2511454545454549,
-        "operation1": "[>0.7424226814423645]"
-    },
-    "Native Hawaiian or Other Pacific Islander": {
-        "p0": 0.6618113207547166,
-        "operation0": "[>0.7184808674461409]",
-        "p1": 0.3381886792452834,
-        "operation1": "[>0.681123060155343]"
-    },
-    "White": {
-        "p0": 0.016409003831414415,
-        "operation0": "[>0.7069509623702396]",
-        "p1": 0.9835909961685856,
-        "operation1": "[>0.7008896300472085]"
-    }
-}
+
 """
 
 """
@@ -172,7 +129,7 @@ thresholded_optimiser_age = ThresholdOptimizer(estimator=LogisticRegression(max_
 )
 
 #fitting data to threshold optimiser
-thresholded_optimiser_age.fit(X_train, y_train, sensitive_features=B_train)  #sets up the model to post-process the predictions in favour of race (A_train)
+thresholded_optimiser_age = thresholded_optimiser_age.fit(X_train, y_train, sensitive_features=B_train)  #sets up the model to post-process the predictions in favour of race (A_train)
 
 #making predicitons
 y_pred_age =thresholded_optimiser_age.predict(X_test, sensitive_features=B_test, random_state=42)  
@@ -364,6 +321,8 @@ print(equalized_odds_difference(
         y_pred=y_pred_age,   #models prediction of approval
         sensitive_features=sensitive_features_race_mitigated
 ))
+
+
 
 """
 Results

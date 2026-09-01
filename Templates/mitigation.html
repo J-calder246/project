@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Bias Mitigation techniques</h1>
+
+<p>
+    Apply Fairlearn's mitigation techniques to the data and see if you get a less biased result.
+</p>
+
+<div class="cards">
+    <div class="card">
+        <h3>preprocessing techniques</h3>
+        <p>Use a logistic regression model on the application</p>
+        <a href="/preprocessing">PreProcessing</a>
+    </div>
+
+
+    <div class="card">
+        <h3>In-processing Techniques</h3>
+        <p>Enter a sample mortgage application and view the predicted result.</p>
+        <a href="/inprocessing">In-processing</a>
+    </div>
+
+    <div class="card">
+        <h3>Post Processing techniques</h3>
+        <p>View stats on accuracy and bias on each of the models.</p>
+        <a href="/postprocessing">Post processing</a>
+    </div>
+
+
+{% endblock %}

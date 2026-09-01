@@ -64,8 +64,19 @@
                     <button type="submit" class="button">Select application
 
                     </button>
+                </form>
+
+                </td>
+
+                <td>
+
+                <form class="inline" method="POST"  action="{{ url_for('delete', select_id=row['_id']) }}" onsubmit="return confirm('Delete this record?');">
+                    <input class="button" type="submit" value="Delete">Delete application
+                </td>
                     
                 </form>
+
+                
                 
                
                 

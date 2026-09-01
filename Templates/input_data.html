@@ -32,7 +32,13 @@
     <p>Property Value</p><input type="text" name="property_value" id="property_value">
     <p>Loan Term</p><input type="text" name="loan_term" id="loan_term">
     <p>loan_purpose</p><input type="text" name="loan_purpose" id="loan_purpose" min="0">
-    <p>Occupancy Type</p><input type="text" name="occupancy_type" id="occupancy_type" min="0">
+    <p>Occupancy Type</p>
+    <select name="occupancy_type" id="occupancy_type">
+        <option value="Principal residence">Principal residence</option>
+        <option value="Second residence">Second residence</option>
+        <option value="Investment property">Investment property</option>    
+    </select>
+
     <p>Race</p>
     <select name="derived_race" id="derived_race">
         <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
@@ -61,7 +67,13 @@
         <option value=">74">>74</option>
         
     </select>
-    <p>Negative Amortization</p><input type="text" name="negative_amortization" id="negative_amortization" min="0">
+    <p>Negative Amortization</p>
+    <select name="negative_amortization" id="negative_amortization">
+        <option value="Negative amortization">Negative amortization</option>
+        <option value="No negative amortization">No negative amortization</option>
+        <option value="Exempt">Exempt</option>    
+    </select>
+
     <p>Rate Spread</p><input type="text" name="rate_spread" id="rate_spread" min="0">
 
     <br><br>

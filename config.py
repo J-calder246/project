@@ -1,4 +1,9 @@
+"""
+Package that holds the MongoDB configuration used for the artifact's application
+"""
+
 import os
+
 # Config class to hold application
 
 class Config:

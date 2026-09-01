@@ -1,4 +1,11 @@
 """
+Processing the fannie mae dataset on delinquency.
+
+Here columns are cut to the only whats that can be applied to the HMDA dataset so that we can insert data from that dataset into a model based on this dataset.
+
+Here we also implement a binary target for delinquency based on if the borrowers have spent any time delinquent.
+
+
 Note: 
 As this dataset in it's rawest form was too large to be uploaded onto github, 
 processing to reduce the size of it (limiting to NY entries and reducing the amount of columns)

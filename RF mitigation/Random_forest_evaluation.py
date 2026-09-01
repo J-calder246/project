@@ -1,3 +1,8 @@
+"""
+Script that uses fairlearns evaluation package to evaluate the fairness of the original random forest model
+
+"""
+
 import pandas as pd
 """evaluation packages""" 
 from fairlearn.metrics import MetricFrame, count, equalized_odds_difference, equalized_odds_ratio,  false_negative_rate, false_positive_rate, selection_rate, true_positive_rate, true_negative_rate

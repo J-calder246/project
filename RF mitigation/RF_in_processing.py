@@ -1,3 +1,10 @@
+"""
+this section usesan in-processing mitigation algorithm with a random forest classifier will be implemented to find if this technique can make any improvements upon the initial LR model and if there are any tradeoffs in accuracy.
+
+Exponentiated gradient (the inprocessing technique used) involes setting up 'fairness constraints for models to target and then repeating trying new classifiers that satisfy theose constraints and select the one as those with minimal error while satisfying fairness.
+
+"""
+
 
 import pandas as pd
 """evaluation packages""" 

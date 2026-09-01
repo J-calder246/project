@@ -6,9 +6,14 @@ import numpy as np
 from pandas import DataFrame
 
 """
-Note
+This file is for processing the NY dataset containing loan applications. Techniques used here include removing rows to reduce the dataset's size and make it more focused on certain types of applications.
+Encoding categorical data into dummy values so the models can more easily interpret the data.
+Altering the debt to income ratio from a range into a single number instead of encoding it.
+Reducing the number of columns in the dataset to make it more manageable for modelling and evaluation.
+And cutting NAN values and values listed in the HMDA glossary as "not available" or "not applicable" from the dataset to make it more manageable for modelling and evaluation.
 
-Many processing decisions are taken from the HMDA's glossary on the dataset. E.G. Removing applications irrelevant action_taken points like application withdrawn/ closed for incompleteness
+Note
+Many processing decisions have been made bosed on the HMDA's glossary on the dataset, which describes each variable and what the different numbers on the variable denote (e.g. occupancy type being numbered 1-3 instead of what those numbers actually mean). E.G. Removing applications irrelevant action_taken points like application withdrawn/ closed for incompleteness
 
 Link to glossary: https://ffiec.cfpb.gov/documentation/publications/loan-level-datasets/lar-data-fields 
 """
@@ -58,10 +63,10 @@ print(df.dtypes)
 
 
 
-#converting ranges into a single number for Debt to income so that higher levels can have more influence on models. This methods also means that DTI won't have to be encoded
+#converting ranges into a single number for Debt to income so that models can still interpret the data. This methods also means that DTI won't have to be encoded
 
 debt_to_income_mode = {
-    "<20%": 10,    #low level to be generous to applicant with low levels of debt
+    "<20%": 10,    
     "20%-<30%": 25,
     "30%-<36%": 33,
     "36": 36,

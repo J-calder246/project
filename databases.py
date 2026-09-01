@@ -1,3 +1,7 @@
+"""
+Section that sefines to routes to the MongoDB collections set up in config
+"""
+
 from config import Config
 from pymongo import MongoClient
 

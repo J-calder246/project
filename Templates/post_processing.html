@@ -9,20 +9,21 @@
 <input type="submit" value="Predict">
         </form>
 
-        {% if prediction_text %}
-            <h3 class="result">{{ prediction_text }}</h3>
-            <h4 class="result">{{ probability_text }}</h4>
+        {% if prediction_text_TOR %}
+            <h2 class="result">{{ prediction_text_TOR }}</h2>
+            
         {% endif %}
 
-        
+        {% if prediction_text_TOA %}
+            <h2 class="result">{{ prediction_text_TOA }}</h2>
+            
+        {% endif %}
 
 <div class="cards">
     <div class="card">
-        <h3>Predict Delinquency</h3>
+        <h4>Predict Delinquency</h4>
         <p>Use our delinquency models to assess if the applicant is likely to become delinquenct on their loan</p>
         <a href="/delinquency">Delinquency models</a>
     </div>
 
 {% endblock %}
-
-

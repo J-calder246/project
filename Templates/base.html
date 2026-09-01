@@ -6,14 +6,34 @@
 </head>
 <body>
 
-<nav>
+<div class="topnav">
     <h2>Mortgage Fairness Dashboard</h2>
-    <a href="/">Home</a>
-    <a href="/models">Models</a>
-    <a href="/fairness">Fairness Results</a>
-    <a href="/predict">Test Application</a>
-    <a href="/input_data">Input application data</a>
-</nav>
+    <form methods="GET", "POST" action="/">
+                    
+            
+                    <button type="submit" class="button">Home
+
+                    </button>
+                    
+                </form>
+    
+    <form action="/datalist">
+                    
+            
+                    <button type="submit" class="button">Data list
+
+                    </button>
+                    
+                </form>
+    <form  action="/inputdata">
+                    
+            
+                    <button type="submit" class="button">Input data
+
+                    </button>
+                    
+                </form>
+</div>
 
 <main>
     {% block content %}{% endblock %}

@@ -3,6 +3,7 @@ Evaluation model 1
 __________________
 
 This module will evaluate the bias that results when the data goes through both of the original models (application model ---> Delinquency model ---> prediction)
+Again, this section will use statistical parity ratio. (Ratio of applications approved in a sensitive group: Ratio for a reference group)
 
 """
 
@@ -268,7 +269,7 @@ Ratio_AI_reference = ((Amerindian_ratio)/(Ratio_approved_reference))
 print("Ratio of American Indian / Alaskan Native : reference groups")
 print(Ratio_AI_reference)
 
-#results from this: 0.240195
+#results from this: 0.478122
 
 #Asian
 
