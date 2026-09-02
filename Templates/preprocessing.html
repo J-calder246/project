@@ -6,14 +6,30 @@
 
 <h1>Predict application with logistic regression</h1>
 
-<input type="submit" value="Predict">
-        </form>
 
-        {% if prediction_text %}
-            <h3 class="result">{{ prediction_text_CR }}</h3>
-            <h4 class="result">{{ probability_text_CR }}</h4>
-            <h3 class="result">{{ prediction_textNSF }}</h3>
-            <h4 class="result">{{ probability_text_NSF }}</h4
+
+        {% if prediction_text_CR %}
+            <h2 class="result">{{ prediction_text_CR }}</h2>
+            
+
+        {% endif %}
+
+
+        {% if probability_text_CR %}
+            <h3 class="result">{{ probability_text_CR }}</h3>
+            
+        {% endif %}
+
+
+        {% if prediction_text_NSF %}
+            <h4 class="result">{{ prediction_text_NSF }}</h4>
+            
+        {% endif %}
+
+
+        {% if probability_text_NSF %}
+            <h5 class="result">{{ probability_text_NSF }}</h5>
+            
         {% endif %}
 
 <div class="cards">

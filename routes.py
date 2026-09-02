@@ -14,19 +14,10 @@ from bson.objectid import ObjectId
 import os
 from sklearn.pipeline import Pipeline
 import numpy as np
-from sklearn.preprocessing import StandardScaler
-
-scaler = StandardScaler()
 
 
 
-"""
-Logistic regression models
-___________________________
-
-Note: Random forest models are too large to load here and therefore they cannot be used in the Flask app
-"""
-
+scaler = joblib.load("models/FeatureScaler.pkl")  #loading prefitted scaler from modelling LR folder
 
 
 
@@ -55,14 +46,13 @@ def input_data():
 @app.route('/input_data', methods=['POST'])
 def input_data_post():
     try:
-        loan_type = request.form.get("loan_type")
-        loan_amount = request.form.get("loan_amount")
-        income = request.form.get("income")
+        loan_type = (request.form.get("loan_type"))
+        loan_amount = (float(request.form.get("loan_amount")))
+        income = (float(request.form.get("income")))
         debt_to_income_ratio = request.form.get("debt_to_income_ratio")
-        loan_to_value_ratio = request.form.get("loan_to_value_ratio")
-        interest_rate = request.form.get("interest_rate")
-        property_value = request.form.get("property_value")
-        loan_term = request.form.get("loan_term")
+        interest_rate = (float(request.form.get("interest_rate")))
+        property_value = (float(request.form.get("property_value")))
+        loan_term = (int(request.form.get("loan_term")))
         loan_purpose = request.form.get("loan_purpose")
         occupancy_type = request.form.get("occupancy_type")
         derived_race = request.form.get("derived_race")
@@ -71,12 +61,11 @@ def input_data_post():
         negative_amortization = request.form.get("negative_amortization")
         rate_spread = request.form.get("rate_spread")
 
-        application_data = {
-            "loan_type": ((loan_type)),
-            "loan_amount": ((loan_amount)),
-            "income": ((income)),
+        insert_data = {
+            "loan_type": (loan_type),
+            "loan_amount": (loan_amount),
+            "income": (income),
             "debt_to_income_ratio": (debt_to_income_ratio),
-            "loan_to_value_ratio": (loan_to_value_ratio),
             "interest_rate": (interest_rate),
             "property_value": (property_value),
             "loan_term": (loan_term),
@@ -89,15 +78,57 @@ def input_data_post():
             "rate_spread": (rate_spread)
                     }
 
-                    #inserting data
+                    #Check all fields have been filled in
+
+        for field_name, value in insert_data.items():
+             if insert_data[field_name] is None or insert_data[field_name] == "":
+                  flash("data is required for all fields", "danger")
+                  return redirect(url_for("input_data"))
+
+
+        #ensures reobustness against invalid inputs
+        if loan_amount < 0:
+             flash("value cannot be negative", "danger")
+             return redirect(url_for("input_data"))
+        if income < 0:
+                     flash("value cannot be negative", "danger")
+                     return redirect(url_for("input_data"))
+        if property_value < 0:
+                     flash("value cannot be negative", "danger")
+                     return redirect(url_for("input_data"))
+        if loan_term < 0:
+                     flash("value cannot be negative", "danger")
+                     return redirect(url_for("input_data"))
+        
+
+        application_data = {
+                    "loan_type": ((loan_type)),
+                    "loan_amount": ((loan_amount)),
+                    "income": ((income)),
+                    "debt_to_income_ratio": (debt_to_income_ratio),
+                    "loan_to_value_ratio": f"{((loan_amount)/ (property_value) * 100):.2f}",  #calculates LTV instead of inputting it. LTV is a percentage
+                    "interest_rate": (interest_rate),
+                    "property_value": (property_value),
+                    "loan_term": (loan_term),
+                    "loan_purpose": ((loan_purpose)),
+                    "occupancy_type": ((occupancy_type)),
+                    "derived_race": (derived_race),
+                    "derived_sex": (derived_sex),
+                    "applicant_age": (applicant_age),
+                    "negative_amortization": ((negative_amortization)),
+                    "rate_spread": (rate_spread)
+                            }
+                
+             
+
+
         input_collection.insert_one(application_data)
         flash("Application successfully stored.", "success")
-
         return redirect(url_for("datalist"))
     except Exception as error:
-        print(type(error).__name__, error)
-        flash(f"Insert failed: {error}", "danger")
-        return redirect(url_for("home"))
+            print(type(error).__name__, error)
+            flash(f"Insert failed: {error}", "danger")
+            return redirect(url_for("home"))
 
 
 @app.route("/delete/<string:select_id>", methods=["POST"])
@@ -147,6 +178,10 @@ def process_data(applicant_data):
 
     #drop id
     df = df.drop(columns=["_id"])
+
+    #validate all datapoints have been filled out
+    if df.isna().any().any():
+         return "Error: Missing data in the application. Please fully fill out the application"
     
     #processing dataframe
 
@@ -172,23 +207,7 @@ def process_data(applicant_data):
 
     df = pd.DataFrame(df, columns= columns_names)
 
-    #converting occupancy type into int values
-
-    occupancy_dict = {'Principal residence': 1,
-    'Second residence': 2,
-    'Investment property': 3}
-
-    df["occupancy_type"] = df["occupancy_type"].map(occupancy_dict)
-
-    #doing the same for negative amortization
-
-    amortisation_dict = {'Negative amortization': 1,
-        'No negative amortization': 2,
-        'Exempt': 1111}
-    
-    df["negative_amortization"] = df["negative_amortization"].map(amortisation_dict)
-
-
+   
     """
 Current datatypes
 
@@ -231,40 +250,19 @@ rate_spread              object
     rate_spread               object
     
         """
-    #converting datatypes
-
-    data_dict = {'loan_type': int,
-        'loan_amount':              float,
-        'income'      :             float,
-        'debt_to_income_ratio':      object,
-        'loan_to_value_ratio':       object,
-        'interest_rate'       :      object,
-        'property_value'       :     object,
-        'loan_term'             :    object,
-        'loan_purpose'           :    int,
-        'occupancy_type'          :   int,
-        'derived_race'            : object,
-        'derived_sex'               :object,
-        'applicant_age'      :      object,
-        'negative_amortization':      int,
-        'rate_spread'           :    object}
-    df = df.astype(data_dict)
+    
 
     print(df.dtypes)
 
     #convert string values into numeric values where appropriate
 
     numeric_columns = [
-        "loan_type",
         "loan_amount",
         "income",
         "loan_to_value_ratio",
         "interest_rate",
         "property_value",
         "loan_term",
-        "loan_purpose",
-        "occupancy_type",
-        "negative_amortization",
         "rate_spread"
     ]
 
@@ -301,6 +299,66 @@ rate_spread              object
             }
         
     df["debt_to_income_ratio"] = df["debt_to_income_ratio"].map(debt_to_income_mode)
+
+     #converting occupancy type into int values
+    
+        
+    occupancy_dict = {'Principal residence': '1',
+    'Second residence': '2',
+    'Investment property': '3'}
+    
+    df["occupancy_type"] = df["occupancy_type"].map(occupancy_dict)
+    
+    loan_type_dict = {'Conventional': '1',
+                          'FHA insured': '2',
+            'Veterans affairs guaranteed': '3',
+            'USDA rural housing or farm service guaranteed': '4'}
+    
+    df["loan_type"] = df["loan_type"].map(loan_type_dict)
+    
+    purpose_dict = {
+             'Home purchase': '1',
+             'Home improvement': '2',
+             'refinancing': '31',
+             'Cash-out refinancing': '32',
+             'other purpose': '4',
+             'Not applicable': '5'
+        }
+    
+    df["loan_purpose"] = df["loan_purpose"].map(purpose_dict)
+    
+    
+        #doing the same for negative amortization
+    
+    amortisation_dict = {'Negative amortization': '1',
+            'No negative amortization': '2',
+            'Exempt': '1111'}
+        
+    df["negative_amortization"] = df["negative_amortization"].map(amortisation_dict)
+
+    print(df.values)
+
+
+    #converting datatypes
+    
+    data_dict = {'loan_type': object,
+            'loan_amount':              float,
+            'income'      :             float,
+            'debt_to_income_ratio':      object,
+            'loan_to_value_ratio':       object,
+            'interest_rate'       :      object,
+            'property_value'       :     object,
+            'loan_term'             :    object,
+            'loan_purpose'           :    object,
+            'occupancy_type'          :   object,
+            'derived_race'            : object,
+            'derived_sex'               :object,
+            'applicant_age'      :      object,
+            'negative_amortization':      object,
+            'rate_spread'           :    object}
+    df = df.astype(data_dict)
+    
+    
 
 
         #as we are encoding a single row which won't have all the datapoints needed to encode, we can use "all categories" to still create these columns
@@ -384,12 +442,15 @@ def logistic():
     model_LR_1st = joblib.load("models/logistic.pkl")   #original logistic regression model for applications.
 
     df = process_data(applicant_data)
+
     X = pd.DataFrame(df)
+
+    print(X.values)
 
     X = X.drop(columns=["interest_rate", "rate_spread"])
     X = X.drop(columns=cols_to_encode)
 
-    X = scaler.fit_transform(X)
+    X = scaler.transform(X)
     X = pd.DataFrame(X)
     prediction = model_LR_1st.predict(X)[0]
     if prediction == 1:
@@ -414,7 +475,7 @@ def mitigation():
             return "applicant not found"
     return render_template("mitigation.html")  
 
-@app.route("/preprocessing")   #NEED TO CHANGE THIS SECTION. AT THE MOMENT IT IS INCORRECT AS THESE MODELS ARE TIED TO THE DATA NOT THE MODEL ITSELF
+@app.route("/preprocessing")   
 def preprocessing():
     selected_id = session.get("selected_application")
     print("selected ID:", selected_id)
@@ -434,39 +495,50 @@ def preprocessing():
                     'derived_sex_Male', 'applicant_age_25-34']
 
     CR = joblib.load("mitigated_models/correlation_remover.pkl") #this is used to transform the data, not to acutally model
-    model_LR_1st = joblib.load("models/logistic.pkl")  #going to use this to model because it already exists
+    model_LR_1st = joblib.load("mitigated_models/correlation_remover_LR.pkl")  #Using model the was trained with the correlation remover data
     no_sensitive_features = joblib.load("mitigated_models/removed_sensitive_features.pkl")
+    scaler_NSF = joblib.load("models/FeatureScaler_NSF.pkl")
 
     
-    df = process_data(applicant_data)
-    X = pd.DataFrame(df)
+    X = process_data(applicant_data)
+    
     
     X = X.drop(columns=["interest_rate", "rate_spread"])
     X = X.drop(columns=cols_to_encode)
-    X = X.drop(columns=sensitive_features)
+    X_NSF = X.drop(columns=sensitive_features)   #setting up separate X value for when i drop the sensitive features
 
-    X = np.reshape(X, (22, 1)) #reshape to 2d array
-    X = pd.DataFrame(X)
+    
 
     print(X.head())
 
-    X = scaler.fit_transform(X)
+    X = scaler.transform(X)
 
-    X = np.reshape(X, (22, 1))
+    X_NSF = scaler_NSF.transform(X_NSF)  #scaling the X with no sensitive features seperately
+
         
-    X = pd.DataFrame(X)
-    X_CR = pd.DataFrame(CR.fit_transform(X))
-    X_CR = pd.DataFrame(X_CR, columns=X_CR.columns)
+    
+    X_CR = (CR.transform(X))
     prediction_correlation_remover = model_LR_1st.predict(X_CR)[0]
+    if prediction_correlation_remover == 1:
+         prediction_correlation_remover = "approved"
+    else:
+         prediction_correlation_remover = "denied"
     prob_correlation_remover = model_LR_1st.predict_proba(X_CR)[0, 1]
 
 
+
     
-    prediction_no_sensitive_features = no_sensitive_features.predict(X)[0]
-    probability_no_sensitive_features = no_sensitive_features.predict_proba(X)[0, 1]
+    prediction_no_sensitive_features = no_sensitive_features.predict(X_NSF)[0]
+    probability_no_sensitive_features = no_sensitive_features.predict_proba(X_NSF)[0, 1]
+    if prediction_no_sensitive_features == 1:
+            prediction_no_sensitive_features = "approved"
+    else:
+            prediction_no_sensitive_features = "denied"
+
+    
     return render_template("preprocessing.html", prediction_text_CR=f"model prediction: {prediction_correlation_remover}",
                                probability_text_CR=f"prediction probability: {prob_correlation_remover}",
-                               prediction_textNSF=f"model prediction: {prediction_no_sensitive_features}",
+                               prediction_text_NSF=f"model prediction: {prediction_no_sensitive_features}",
                                probability_text_NSF=f"prediction probability: {probability_no_sensitive_features}")
 
 
@@ -492,10 +564,10 @@ def inprocessing():
     X = X.drop(columns=[ "interest_rate", "rate_spread"]) #model not trained on these
     X = X.drop(columns= cols_to_encode)
 
-    X = np.reshape(X, (39, 1)) #reshape to 2d array
+    
     X = pd.DataFrame(X)
     print(X.head)
-    X = scaler.fit_transform(X)
+    X = scaler.transform(X)
         
     
     prediction_exponentiated_gradient = exponentiated_gradient.predict(X)[0]
@@ -529,7 +601,7 @@ def postprocessing():
     X = X.drop(columns=["interest_rate", "rate_spread"])
     X = X.drop(columns= cols_to_encode)
 
-    X = scaler.fit_transform(X)
+    X = scaler.transform(X)
         
     
     prediction_race = threshold_optimiser_race.predict(X, sensitive_features=A, random_state=42)[0]
@@ -560,6 +632,10 @@ def process_FM(applicant_data):
 
      print(df.head())
 
+     #drop id column
+
+     df = df.drop(columns=["_id"])
+
     #processing dataframe
 
     
@@ -586,8 +662,11 @@ def process_FM(applicant_data):
      df = pd.DataFrame(df)
 
      print(df.columns.to_list)
-     
-     df = df[['loan_amount', 'debt_to_income_ratio', 'loan_to_value_ratio', 'loan_term', 'interest_rate']]
+
+     df = df.drop(columns=["loan_type", "income", "property_value", "loan_purpose", 
+                           "occupancy_type", "derived_race", "derived_sex", "applicant_age", 
+                           "negative_amortization", "rate_spread"])
+     print(df.columns.to_list)
 
      debt_to_income_mode = {
                  "<20%": 10,   
@@ -616,22 +695,24 @@ def process_FM(applicant_data):
 
      print(df["debt_to_income_ratio"])
 
+     print(df.dtypes)
+
 
     
     #converting datatypes
 
      data_dict = {
         'loan_amount':              float,
-        'debt_to_income_ratio':      object,
-        'loan_to_value_ratio':       object,
-        'interest_rate'       :      object,
-        'loan_term'             :    object,}
+        'debt_to_income_ratio':      float,
+        'loan_to_value_ratio':       float,
+        'interest_rate'       :      float,
+        'loan_term'             :    int,}
      df = df.astype(data_dict)
 
      print(df.dtypes)
 
             
-     df_fm = pd.DataFrame(df, columns= columns_names)
+     
 
      numeric_columns = [
              "loan_amount",
@@ -646,15 +727,19 @@ def process_FM(applicant_data):
                  errors="coerce"
              )
     
+#renaming columns
+     df_fm = pd.DataFrame({
+    "original UPB": df["loan_amount"],  #represent original unpaid principal balance (i.e. loan amount)
+    "debt to income": df["debt_to_income_ratio"],
+    "original LTV ratio": df["loan_to_value_ratio"], #loan to value
+    "original loan term": df["loan_term"],
+    "original interest rate": df["interest_rate"]
+})
+     
 
-     Column_names = [
-    "original UPB",  #represent original unpaid principal balance (i.e. loan amount)
-    "debt to income",
-    "original LTV ratio", #loan to value
-    "original loan term",
-    "original interest rate",
-]
-     df_fm = df_fm.rename(columns=dict(zip(df_fm.columns,Column_names)))
+     print(df_fm.head())
+
+     return df_fm
 
 
 
@@ -669,7 +754,9 @@ def delinquency():
      if not applicant_data:
         return "applicant not found"
 
-     X = process_FM(applicant_data)
+     X = pd.DataFrame(process_FM(applicant_data))
+
+     print(X.head())
 
      
 
@@ -680,7 +767,11 @@ def delinquency():
      scaler_fm = joblib.load("models/FMscaler.pkl")
      model_fm_RF = joblib.load("models/Fannie_mae_RF.pkl")  # original fannie mae model for delinquency.
 
-     X = scaler_fm.fit_transform(X)
+     X = np.reshape(X, (1, 5))
+
+     X = scaler_fm.transform(X)
+
+     
      
      prediction_delinquency_LR = model_LR_fm.predict(X)[0]
      probability_delinquency_LR = model_LR_fm.predict_proba(X)[:, 1]
@@ -699,20 +790,92 @@ def delinquency():
 
 
 @app.route("/all_predictions")
-def all_predictions(prediction, probability, prediction_correlation_remover, prob_correlation_remover, prediction_no_sensitive_features, probability_no_sensitive_features, prediction_exponentiated_gradient, prediction_delinquency_LR, probability_delinquency_LR, prediction_race, prediction_age,  prediction_delinquency,
-                    probability_delinquency, prediction_delinquency_RF, probability_delinquency_RF):
+def all_predictions():
+    #import all models
+    model_LR_1st = joblib.load("models/logistic.pkl") 
+    CR = joblib.load("mitigated_models/correlation_remover.pkl") #this is used to transform the data, not to acutally model
+    no_sensitive_features = joblib.load("mitigated_models/removed_sensitive_features.pkl")
+    exponentiated_gradient = joblib.load("mitigated_models/exponentiated_gradient_LR.pkl")
+    threshold_optimiser_race = joblib.load("mitigated_models/threshold_optimiser_race_LR.pkl")
+    threshold_optimiser_age = joblib.load("mitigated_models/thresholded_optimiser_age_LR.pkl")
+    
+
+    #delinquency ones
+    model_LR_fm = joblib.load("models/FMlogistic.pkl")  # original fannie mae model for delinquency.
+    scaler_fm = joblib.load("models/FMscaler.pkl")
+    model_fm_RF = joblib.load("models/Fannie_mae_RF.pkl")  # original fannie mae model for delinquency.
+
+
     selected_id = session.get("selected_application")
     applicant_data = input_collection.find_one({"_id": ObjectId(selected_id)})
-
-    prediction = logistic(applicant_data)
-
     if not applicant_data:
         return "applicant not found"
+
+    X_processed = process(applicant_data)
+    X = X_processed.drop(columns=["interest_rate", "rate_spread"])
+    X = X.drop(columns=cols_to_encode)
+    X = scaler.transform(X)
+
+    prediction = model_LR_1st.predict(X)[0]
+    if prediction == 1:
+        prediction = "approved"
+    else:
+        prediction = "denied"
+    probability = model_LR_1st.predict_proba(X)[0, 1]
+
+    #inprocessing
+
+    prediction_exponentiated_gradient = exponentiated_gradient.predict(X)[0]
+    if prediction_exponentiated_gradient == 1:
+        prediction_exponentiated_gradient = "approved"
+    else:
+        prediction_exponentiated_gradient = "denied"
+
+    #postprocessing
+
+    A = X_processed['derived_race']
+    B = X_processed['applicant_age']
+
+    prediction_race = threshold_optimiser_race.predict(X, sensitive_features=A, random_state=42)[0]
+    if prediction_race == 1:
+        prediction_race = "approved"
+    else:
+        prediction_race = "denied"
+
+    prediction_age = threshold_optimiser_age.predict(X, sensitive_features=B, random_state=42)[0]
+    if prediction_age == 1:
+        prediction_age = "approved"
+    else:
+        prediction_age = "denied"
+
+
+    #Delinquency
+    X_fm = pd.DataFrame(process_FM(applicant_data))
+
+    X = np.reshape(X, (1, 5))
+
+    X = scaler_fm.transform(X)
+
+     
+     
+    prediction_delinquency_LR = model_LR_fm.predict(X)[0]
+    probability_delinquency_LR = model_LR_fm.predict_proba(X)[:, 1]
+
+     
+     
+    prediction_delinquency_RF = model_fm_RF.predict(X)[0]
+    probability_delinquency_RF = model_fm_RF.predict_proba(X)[:, 1]
+    
+
+    
+
+    
     return render_template("all_predictions.html", prediction_text= f"model prediction: {prediction}",
                            probability_text=f"prediction probability: {probability}",  prediction_text_CR=f"model prediction: {prediction_correlation_remover}",
                                probability_text_CR=f"prediction probability: {prob_correlation_remover}",
                                prediction_textNSF=f"model prediction: {prediction_no_sensitive_features}",
                                probability_text_NSF=f"prediction probability: {probability_no_sensitive_features}",prediction_XG_text=f"model prediction: {prediction_exponentiated_gradient}", prediction_LR_text= f"model prediction: {prediction_delinquency_LR}",
                                     probability_LR_text= f"prediction probability: {probability_delinquency_LR}", prediction_text_TOR=f"model prediction: {prediction_race}",
-                               prediction_text_TOA=f"model prediction: {prediction_age}"
+                               prediction_text_TOA=f"model prediction: {prediction_age}", 
                                     )
+

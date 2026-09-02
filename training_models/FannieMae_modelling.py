@@ -30,7 +30,7 @@ print(df.head())
 X = df.drop(columns=['loan id', 'Current Loan Delinquency Status', 'delinquent'])  #list price dropped due to missing values (ammend later if possible)
 y = df['delinquent']
 
-print(X.columns.value_counts)
+print(X.dtypes)
 
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)   #stratify  prevent overfitting and helps ensure that the data is representative and balanced   
@@ -139,6 +139,9 @@ joblib.dump(Model_RF, "models/Fannie_mae_RF.pkl")
 
 joblib.dump(logreg, "models/FMlogistic.pkl")
 joblib.dump(scaler, "models/FMscaler.pkl")
+
+
+
 
 
 

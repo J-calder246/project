@@ -2,7 +2,13 @@
 {% block content %}
 <h2>Add New Application</h2>
 <form method="POST" action="{{ url_for('input_data_post') }}">     
-    <p>Loan Type</p><input type="text" name="loan_type" id="loan_type">
+    <p>Loan Type</p>
+    <select name="loan_type" id="loan_type">
+        <option value="Conventional">Conventional</option>
+        <option value="FHA insured">FHA insured</option>
+        <option value="Veterans affairs guaranteed">Veterans affairs guaranteed</option> 
+        <option value="USDA rural housing or farm service guaranteed">USDA rural housing or farm service guaranteed</option>   
+    </select>
     <p>Loan Amount</p><input type="text" name="loan_amount" id="loan_amount">
     <p>Income</p><input type="text" name="income" id="income">
     <p>Debt to income ratio</p>
@@ -27,11 +33,18 @@
         <option value=">60%">over 60%</option>
     </select>
 
-    <p>Loan-to-Value Ratio</p><input type="text" name="loan_to_value_ratio" id="loan_to_value_ratio">
     <p>Interest Rate</p><input type="text" name="interest_rate" id="interest_rate">
     <p>Property Value</p><input type="text" name="property_value" id="property_value">
     <p>Loan Term</p><input type="text" name="loan_term" id="loan_term">
-    <p>loan_purpose</p><input type="text" name="loan_purpose" id="loan_purpose" min="0">
+    <p>loan_purpose</p>
+    <select name="loan_purpose" id="loan_purpose">
+        <option value="Home improvement">Home improvement</option>
+        <option value="refinancing">refinancing</option>
+        <option value="cash-out refinancing">cash-out refinancing</option> 
+        <option value="Home purchase">Home purchase</option>
+        <option value="other purpose">other purpose</option>
+        <option value="Not applicable">Not applicable</option>      
+    </select>
     <p>Occupancy Type</p>
     <select name="occupancy_type" id="occupancy_type">
         <option value="Principal residence">Principal residence</option>

@@ -79,6 +79,19 @@ classification_report_race = classification_report(y_test, y_pred)
 print("accuracy score race: ", accuracy)
 print("classification report: ", classification_report_race)
 
+"""
+accuracy score race:  0.8499763632824449
+classification report:                precision    recall  f1-score   support
+
+       False       0.76      0.58      0.66     17755
+        True       0.87      0.94      0.90     54167
+
+    accuracy                           0.85     71922
+   macro avg       0.81      0.76      0.78     71922
+weighted avg       0.84      0.85      0.84     71922
+
+
+"""
 
 
 
@@ -127,15 +140,15 @@ print(json.dumps(threshold_rules_by_age_group, indent=4, default=str))
 """
 Results for age
 ----------------------
-accuracy score age:  0.6505085958664872
+accuracy score age:  0.7935819359862073
 classification report:                precision    recall  f1-score   support
 
-       False       0.41      0.64      0.50     15885
-        True       0.83      0.66      0.73     42806
+       False       0.57      0.67      0.61     17755
+        True       0.88      0.83      0.86     54167
 
-    accuracy                           0.65     58691
-   macro avg       0.62      0.65      0.61     58691
-weighted avg       0.71      0.65      0.67     58691
+    accuracy                           0.79     71922
+   macro avg       0.73      0.75      0.74     71922
+weighted avg       0.81      0.79      0.80     71922
 
 
 """

@@ -13,7 +13,6 @@ Objectives include: accuracy, balanced accuracy score, selection rate and true p
 from sklearn.impute import SimpleImputer
 import json #for formatting output
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from fairlearn.postprocessing import ThresholdOptimizer, plot_threshold_optimizer
@@ -148,21 +147,18 @@ print("accuracy score age: ", accuracy)
 print("classification report: ", classification_report_age)
 
 
-print("Fairness after prediction with threshold optimiser:")
-print(json.dumps(threshold_rules_by_age_group, indent=4, default=str))
+
 
 """
-Results for age
-----------------------
-accuracy score age:  0.6505085958664872
 classification report:                precision    recall  f1-score   support
 
-       False       0.41      0.64      0.50     15885
-        True       0.83      0.66      0.73     42806
+       False       0.50      0.62      0.55     17755
+        True       0.87      0.80      0.83     54167
 
-    accuracy                           0.65     58691
-   macro avg       0.62      0.65      0.61     58691
-weighted avg       0.71      0.65      0.67     58691
+    accuracy                           0.75     71922
+   macro avg       0.68      0.71      0.69     71922
+weighted avg       0.78      0.75      0.76     71922
+
 
 """
 
@@ -235,32 +231,30 @@ print(equalized_odds_difference(
 ))
 
 """
-Results
-
 metrics frame by Race
                                            accuracy  selection rate    count  true positive rate  false_positive_rate  false_negative_rate
 derived_race                                                                                                                              
-2 or more minority races                   0.688312        0.435065    154.0            0.650794             0.285714             0.349206
-American Indian or Alaska Native           0.730375        0.511945    293.0            0.775194             0.304878             0.224806
-Asian                                      0.773621        0.653462   6816.0            0.791742             0.275862             0.208258
-Black or African American                  0.734915        0.632881   5900.0            0.792927             0.362933             0.207073
-Joint                                      0.751431        0.695830   1223.0            0.782250             0.366142             0.217750
-Native Hawaiian or Other Pacific Islander  0.768546        0.495549    337.0            0.820144             0.267677             0.179856
-White                                      0.754733        0.698142  57199.0            0.793204             0.375739             0.206796
+2 or more minority races                   0.655844        0.467532    154.0            0.650794             0.340659             0.349206
+American Indian or Alaska Native           0.716724        0.518771    293.0            0.767442             0.323171             0.232558
+Asian                                      0.770393        0.650235   6816.0            0.787332             0.275862             0.212668
+Black or African American                  0.733051        0.637458   5900.0            0.795086             0.371585             0.204914
+Joint                                      0.756337        0.715454   1223.0            0.797730             0.401575             0.202270
+Native Hawaiian or Other Pacific Islander  0.780415        0.507418    337.0            0.848921             0.267677             0.151079
+White                                      0.753265        0.702093  57199.0            0.794811             0.387639             0.205189
 Equalised odds difference for race
-0.16935023409843553
+0.19812721251570176
 metrics frame by age
                accuracy  selection rate    count  true positive rate  false_positive_rate  false_negative_rate
 applicant_age                                                                                                 
-25-34          0.858870        0.883723  13399.0            0.936863             0.582795             0.063137
-35-44          0.786237        0.748606  17220.0            0.841364             0.413137             0.158636
-45-54          0.720655        0.633735  16843.0            0.745013             0.342986             0.254987
-55-64          0.699070        0.570764  13764.0            0.692595             0.285784             0.307405
-65-74          0.684645        0.545682   6786.0            0.665257             0.270783             0.334743
-<25            0.831072        0.881275   1474.0            0.938963             0.633094             0.061037
->74            0.656404        0.448276   2436.0            0.582738             0.216760             0.417262
+25-34          0.858049        0.891708  13399.0            0.941078             0.612133             0.058922
+35-44          0.786353        0.755691  17220.0            0.845960             0.429223             0.154040
+45-54          0.719646        0.638307  16843.0            0.747476             0.353067             0.252524
+55-64          0.696455        0.567858  13764.0            0.688654             0.285298             0.311346
+65-74          0.680961        0.544356   6786.0            0.661662             0.274672             0.338338
+<25            0.830393        0.888738   1474.0            0.943144             0.654676             0.056856
+>74            0.644910        0.447455   2436.0            0.573005             0.231285             0.426995
 Equalised odds difference for age
-0.4163337486435432
+0.42339134279168844
 
 """
 
@@ -325,32 +319,30 @@ print(equalized_odds_difference(
 
 
 """
-Results
-
 metrics frame by age
                accuracy  true_positive_rate  selection_rate  false_positive_rate  false_negative_rate
 applicant_age                                                                                        
-25-34          0.782148            0.814805        0.752967             0.402785             0.185195
-35-44          0.772880            0.816308        0.722706             0.384182             0.183692
-45-54          0.761741            0.825384        0.708900             0.404547             0.174616
-55-64          0.758646            0.820266        0.690061             0.385492             0.179734
-65-74          0.756263            0.812011        0.678603             0.371901             0.187989
-<25            0.748304            0.813545        0.760516             0.532374             0.186455
->74            0.748358            0.826736        0.665025             0.386592             0.173264
+25-34          0.769311            0.796013        0.733861             0.381900             0.203987
+35-44          0.760918            0.796961        0.704355             0.369437             0.203039
+45-54          0.749332            0.804367        0.690910             0.394466             0.195633
+55-64          0.749637            0.801597        0.672915             0.371907             0.198403
+65-74          0.742706            0.790653        0.662393             0.367526             0.209347
+<25            0.738806            0.790134        0.732022             0.482014             0.209866
+>74            0.732348            0.796885        0.643268             0.378771             0.203115
 Equalised odds difference for age
-0.1604732742731435
+0.11448886588347212
 metrics frame by Race
                                            accuracy  true_positive_rate  selection_rate  false_positive_rate  false_negative_rate
 derived_race                                                                                                                     
-2 or more minority races                   0.668831            0.476190        0.311688             0.197802             0.523810
-American Indian or Alaska Native           0.682594            0.488372        0.307167             0.164634             0.511628
-Asian                                      0.733862            0.733414        0.607835             0.264915             0.266586
-Black or African American                  0.643898            0.572624        0.447288             0.235883             0.427376
-Joint                                      0.763696            0.805986        0.721177             0.397638             0.194014
-Native Hawaiian or Other Pacific Islander  0.727003            0.496403        0.270030             0.111111             0.503597
-White                                      0.783860            0.851587        0.759192             0.445835             0.148413
+2 or more minority races                   0.662338            0.460317        0.305195             0.197802             0.539683
+American Indian or Alaska Native           0.665529            0.434109        0.276451             0.152439             0.565891
+Asian                                      0.734302            0.734817        0.609448             0.267105             0.265183
+Black or African American                  0.637627            0.562635        0.441017             0.235883             0.437365
+Joint                                      0.730989            0.760578        0.681930             0.381890             0.239422
+Native Hawaiian or Other Pacific Islander  0.727003            0.474820        0.252226             0.095960             0.525180
+White                                      0.770293            0.828927        0.737758             0.428560             0.171073
 Equalised odds difference for race
-0.3753964301345114
+0.3948179907294024
 """
 
 

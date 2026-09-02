@@ -81,14 +81,14 @@ joblib.dump(exponentiated_gradient, "mitigated_models/exponentiated_gradient_RF.
 
 
 """
-precision    recall  f1-score   support
+                precision    recall  f1-score   support
 
-       False       0.57      0.47      0.51     15885
-        True       0.81      0.87      0.84     42806
+       False       0.48      0.67      0.56     17755
+        True       0.88      0.77      0.82     54167
 
-    accuracy                           0.76     58691
-   macro avg       0.69      0.67      0.68     58691
-weighted avg       0.75      0.76      0.75     58691
+    accuracy                           0.74     71922
+   macro avg       0.68      0.72      0.69     71922
+weighted avg       0.78      0.74      0.75     71922
 
 """
 
@@ -147,3 +147,34 @@ print(equalized_odds_difference(
         y_pred=y_pred,   #models prediction of approval
         sensitive_features=sensitive_features_race_mitigated
 ))
+
+
+"""
+Results
+
+metrics frame age
+               accuracy  selection rate    count  true positive rate  false_positive_rate  false_negative_rate
+applicant_age                                                                                                 
+25-34          0.799313        0.771326  13399.0            0.835704             0.406763             0.164296
+35-44          0.758653        0.675029  17220.0            0.776798             0.306971             0.223202
+45-54          0.734430        0.635872  16843.0            0.756013             0.321965             0.243987
+55-64          0.716362        0.597355  13764.0            0.723916             0.301310             0.276084
+65-74          0.694371        0.578397   6786.0            0.695707             0.308702             0.304293
+<25            0.639077        0.633650   1474.0            0.668060             0.485612             0.331940
+>74            0.680624        0.646552   2436.0            0.758598             0.453631             0.241402
+Equalised odds difference for age
+0.18430146712324463
+metrics frame race
+                                           accuracy  selection rate    count  true positive rate  false_positive_rate  false_negative_rate
+derived_race                                                                                                                              
+2 or more minority races                   0.597403        0.551948    154.0            0.682540             0.461538             0.317460
+American Indian or Alaska Native           0.580205        0.607509    293.0            0.713178             0.524390             0.286822
+Asian                                      0.789173        0.675763   6816.0            0.817599             0.288451             0.182401
+Black or African American                  0.738983        0.645763   5900.0            0.806425             0.374772             0.193575
+Joint                                      0.624693        0.596893   1223.0            0.639835             0.433071             0.360165
+Native Hawaiian or Other Pacific Islander  0.578635        0.560831    337.0            0.669065             0.484848             0.330935
+White                                      0.740502        0.659574  57199.0            0.759021             0.322303             0.240979
+Equalised odds difference for age
+0.23593923131349542
+
+"""

@@ -348,44 +348,11 @@ print(equalized_odds_difference(
         sensitive_features=sensitive_features_race
 ))
 
-"""
-Original results
 
-metrics frame by Race
-                                           accuracy  selection rate    count
-derived_race                                                                
-2 or more minority races                   0.194175        0.582524    103.0
-American Indian or Alaska Native           0.161290        0.689516    248.0
-Asian                                      0.615758        0.773152   5356.0
-Black or African American                  0.400665        0.642983   5109.0
-Joint                                      0.708989        0.767416    890.0
-Native Hawaiian or Other Pacific Islander  0.116438        0.767123    292.0
-White                                      0.669544        0.756452  46693.0
-Equalised odds difference for race
-0.5110852110852111
-
-
-_________________
-
-Mitigated results
-
-metrics frame by Race
-                                           accuracy  selection rate    count  true_positive_rate
-derived_race                                                                                    
-2 or more minority races                   0.591463        0.829268    164.0            0.936709
-American Indian or Alaska Native           0.457680        0.846395    319.0            0.843972
-Asian                                      0.786335        0.816879   6908.0            0.910219
-Black or African American                  0.719670        0.798830   5811.0            0.915128
-Joint                                      0.704467        0.782646   1164.0            0.813260
-Native Hawaiian or Other Pacific Islander  0.481050        0.816327    343.0            0.869565
-White                                      0.777481        0.812333  57213.0            0.881515
-Equalised odds difference for race
-0.2906328134118846
-"""
 
 
 """
-Actual results exponentiated gradient
+ results of exponentiated gradient
 
 Classification Report Exponentiated gradient:
               precision    recall  f1-score   support
@@ -397,7 +364,9 @@ Classification Report Exponentiated gradient:
    macro avg       0.67      0.64      0.65     71922
 weighted avg       0.75      0.76      0.75     71922
 
-metrics frame by Race
+
+
+metrics frame by age
                accuracy  selection rate    count  true_positive_rate  false_negative_rate  false_positive_rate
 applicant_age                                                                                                 
 25-34          0.788417        0.802075  13399.0            0.847383             0.152617             0.545500
@@ -409,6 +378,8 @@ applicant_age
 >74            0.690476        0.824713   2436.0            0.907203             0.092797             0.682682
 Equalised odds difference for age
 0.18471607597065065
+
+
 metrics frame by Race
                                            accuracy  selection rate    count  true_positive_rate  false_negative_rate  false_positive_rate
 derived_race                                                                                                                              
