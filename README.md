@@ -35,7 +35,7 @@ Research Questions
 Raw Datasets
 
 -       HMDA datasets counting mortgage applications from the state of New york in 2019 with finanacial metrics and demographic features from each of the applicant. This dataset is used to predict approval. "raw_datasets/state_NY 2019 (1).csv"
--       A Fannie mae dataset from 2019, displaying various mortgages and if those borrowers failed to make payments on their mortgages. This dataset is used to predict if the applicants would be delinquent. "raw_datasets/2019, NY fianl (1).xls"
+-       A Fannie mae dataset from 2019, displaying various mortgages and if those borrowers failed to make payments on their mortgages. This dataset is used to predict if the applicants would be delinquent. "raw_datasets/2019, NY fianl (1).xls"    Note: This dataset in it's rawest form was too large to upload to github so some processing to reduce it's size (isolating NY cases, removing unnecessary columns) was done in jupyter notebook.
 
 Data processing
 
@@ -68,7 +68,7 @@ This project has used various pre, in and post processing techniques to mitigate
 Pre processing
  includes retraining the models without using the sensitive values and seeing how that effect fairness as well as using Fairlearn's correlation remover which remove the correlation between sensitive features and final results that could be causing bias from the model.
 
-In- processing includes an Exponentiated gradient model. This technique creates many different classifiers that are constrained by a fairness target. Expponentiated gradient then selects the classifier with the least error to ensure accuracy and fairness.
+In- processing includes an Exponentiated gradient model. This technique creates many different classifiers that are constrained by a fairness target. Expponentiated gradient then selects the classifier with the least error that maintains high rates of fairness.
 
 Post-processing techniques include a threshold optimiser technique which alters a model prediction to target fairness while setting limits to maintain accuracy.
 
