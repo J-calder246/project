@@ -17,6 +17,8 @@ To run app - run "run_app.py" where you can enter data for testing the models th
 Note: some models trained and used are too large and cumbersome to be deployed onto the app
 
 
+A good way to see the bias of the baseline model is to run the basic LR test of id 6a99ce6039435a5d29f6c8ec  (the first application on the list) a white application
+and then run it for 6a99cea639435a5d29f6c8ee (2nd on the list) a native american application. Despite both having the same financial metrics, the LR model will approve the first but reject the second while the models with mitigation techniques will approve both and the delinquency models will mark neither as delinquent.
 
 
 
