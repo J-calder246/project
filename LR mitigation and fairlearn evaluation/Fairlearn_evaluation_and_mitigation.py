@@ -20,6 +20,8 @@ df = pd.read_csv("modelled_datasets/LR_test_data.csv")
 
 #Setting up 'MetricFrame'  https://fairlearn.org/main/api_reference/generated/fairlearn.metrics.MetricFrame.html 
 
+
+#Setting a dictionary with many of fairlearn's metrics
 metrics_dict = {"accuracy": accuracy_score, "selection rate": selection_rate, "count": count, "true_positive_rate": true_positive_rate, "false_negative_rate": false_negative_rate, "false_positive_rate": false_positive_rate}
 
 
@@ -67,6 +69,8 @@ Joint        0.770040        0.735148  28144.0            0.813669             0
 Male         0.707528        0.576261  26488.0            0.697722             0.302278             0.267549
 Equalised odds difference for gender
 0.15477176844450669
+
+Very low Equalised odds difference with most of it coming from the joint applications and not differences between male and female applications as shown by their very similar selection rates
 """
 
 """
@@ -115,6 +119,8 @@ Native Hawaiian or Other Pacific Islander  0.667656        0.127596    337.0    
 White                                      0.740852        0.669715  57199.0            0.765812             0.234188             0.343800
 Equalised odds difference for race
 0.5599875200998392
+
+High equalised odds ratio with the smallest groups and black applicants being worst affected
 """
 
 """
@@ -184,6 +190,9 @@ df_modelling = pd.read_csv("processed_datasets/NY2019.csv")
 """
 Attempting mitigation with three protected attributes at a time
 
+This section will use Exponentiated gradient. An in-processing technique which creates many classifier subjected to set fairness constraints, 
+it then chooses the one with the least error and selects that one
+
 
 """
 
@@ -224,7 +233,7 @@ model_pipeline = Pipeline([
 
 exponentiated_gradient = ExponentiatedGradient(
     estimator=model_pipeline,
-    constraints=DemographicParity(),
+    constraints=DemographicParity(),  #targets equal selection rate by demographic
     sample_weight_name="logreg__sample_weight" #allows for more weight for underrepresented samples
 
 )
@@ -284,37 +293,11 @@ print(equalized_odds_difference(
 ))
 
 """
-Original results
-
-metrics frame by age
-               accuracy  selection rate    count
-applicant_age                                   
-35-44          0.738452        0.792233  16995.0
-45-54          0.625667        0.737815  17049.0
-55-64          0.568465        0.728677  13788.0
-65-74          0.562900        0.711158   7035.0
-<25            0.867238        0.811563   1401.0
->74            0.455221        0.683038   2423.0
-Equalised odds difference for age
-0.48032064284599785
-
 _________________
 
 Mitigated results
+____________________
 
-
-metrics frame by Race
-               accuracy  selection rate    count  true_positive_rate
-applicant_age                                                       
-25-34          0.797829        0.809976  13172.0            0.856329
-35-44          0.790847        0.817859  17437.0            0.887316
-45-54          0.765191        0.798505  16720.0            0.891371
-55-64          0.750664        0.813339  13929.0            0.906205
-65-74          0.740311        0.826100   6889.0            0.902600
-<25            0.726955        0.800978   1432.0            0.816054
->74            0.697397        0.815194   2343.0            0.898474
-Equalised odds difference for age
-0.18329660142379878
 
 """
 
@@ -392,6 +375,9 @@ Native Hawaiian or Other Pacific Islander  0.465875        0.786350    337.0    
 White                                      0.772251        0.807759  57199.0            0.875515             0.124485             0.577965
 Equalised odds difference for race
 0.1947618216716105
+
+Large improvements to equalised odds for both age and race.
+Models also have very low false negative rates which is very disirable as the models aren't selecting unqualified candidates
 
 """
 

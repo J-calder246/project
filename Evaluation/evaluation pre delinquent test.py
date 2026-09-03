@@ -18,6 +18,8 @@ df_modelled = pd.read_csv("modelled_datasets/approved_application_1st_model_LR.c
 
 print(df_modelled.head())
 
+#Removes encoded columns to make the dataset easier to handle
+
 relevant_columns = ['approved', 'action_taken', 'loan_type', 'loan_amount', 'income',
        'debt_to_income_ratio', 'loan_to_value_ratio', 'interest_rate',
        'property_value', 'loan_term', 'loan_purpose',
@@ -74,7 +76,7 @@ American Indian or Alaska Native                47
 Native Hawaiian or Other Pacific Islander       43
 2 or more minority races                        27
 
-Ratio of applications approved/applications by race
+Ratio of applications approved/applications by race (selection rate)
 derived_race
 2 or more minority races                     0.175325
 American Indian or Alaska Native             0.160410
@@ -183,20 +185,20 @@ Calculating statistical parity ratio (ratio of positives between unreference and
 Statistical parity = (Probability of favourable outcome for underpriveleged group) / (probability of positive outcome for advantaged group)
 In this case we take probability as the percentage of applicants selected out of the whole sample size for that group
 
-reference groups defined as those with high approval rates. Here we select white asian and joint as those groups have high approval rates (over 60%)
+To compare the groups we need to set a reference group to compare the rest to. 
+For race we will use the white group as it is by far the largest group and has high approval rates
 
-reference: Asian, Joint, White
+reference: White
 
 
 Unreference groups generally have much lower approval rates than the reference groups 
 
-Unreference: 2 or more minority races, American Indian or Alaska Native, Asian, 
-Black or African American,  Joint, Native Hawaiian or Other Pacific Islander
+Unreference: Rest of the groups
 
 """
 
 
-#getting the ratio of positives for the combined advantaged groups
+#getting the ratio of positives for the reference
 
 
 
@@ -360,7 +362,7 @@ woman_approved = (df_modelled["derived_sex"] == "Female").value_counts(dropna=Tr
 woman_applications = (df_original["derived_sex"] == "Female").value_counts(dropna=True)
 
 
-#Using white as the reference groups as they are the largest race of all applicants and have a relatively high approval rate
+#Using male as a reference group as we are only comparing the individual genders
 
 
 Ratio_approved_gender_reference = ((woman_approved)/ (woman_applications))             
@@ -398,7 +400,7 @@ Using 35-44 as the reference group due to it's size and high approval rates
 """
 Evaluation for age
 
-Going to use 35-44 as the reference group as it is the largest and has high rates of approval
+Going to use 35-44 as the reference group as it is the largest and has high rates of approval although not the highest
 
 """
 

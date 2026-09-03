@@ -30,8 +30,8 @@ print(df.columns.tolist())
 df = df.drop_duplicates()
 
 
-df = df[df["action_taken"].isin([1, 2, 3])]  #Keeps values for loan given out (1), loan approved but not purchased (2) and loan denied (3). Other action aren't useful for what we are trying to do
-df["approved"] = df["action_taken"].isin([1, 2]) #defines first two as loans that are approved (wheterh they are accepted or not)
+df = df[df["action_taken"].isin([1, 2, 3])]  #Keeps values for loan approved and dispersed (1), loan approved but not purchased (2) and loan denied (3). Other action aren't useful for what we are trying to do
+df["approved"] = df["action_taken"].isin([1, 2]) #defines first two as loans that are approved (wheterh they are accepted or not) so we can have a binary target for the models to predict
 df = df[
     (df["derived_dwelling_category"].isin(["Single Family (1-4 Units):Site-Built", "Single Family (1-4 Units):Manufactured"]))]   #focuses dataset on single family applications
 
@@ -84,7 +84,7 @@ debt_to_income_mode = {
     "48": 48,
     "49": 49,
     "50%-60%": 55,
-    ">60%": 65,  # debt to income converted into single numbers so models can accordingly interpret the higher levels
+    ">60%": 65,  # debt to income converted into single numbers so models can interpret the variable
     "Exempt": None
     
 
@@ -178,7 +178,7 @@ df = df.replace("Exempt", np.nan)
 
 print(df.head())
 
-print(df.columns[df.columns.str.endswith(".1")])
+print(df.columns[df.columns.str.endswith(".1")])   #Getting dummy cols was duplicating some columns so this is here to check that is not happening 
 
 #Imputing missing values with iterative imputer (a multivariate imputer) 
 # This means that missing values will be estimated and will be unique rather than one uniform value that can interfere with models

@@ -99,14 +99,7 @@ print(df.columns.tolist())
 print(df["Current Loan Delinquency Status"].value_counts(dropna=False))
 #Delinquency has monthly values for each case, for this, i need to ddivide the dataset into those who are delinquent and those who arent
 
-directory = "processed_datasets" 
-os.makedirs(directory, exist_ok=True)
 
-output_file_path = os.path.join(directory, "NY2019.csv")
-df.to_csv(output_file_path, index=False)
-
-
-df = pd.read_csv("processed_datasets/NY2019.csv")
 
 #delting XX values for delinquency
 
@@ -155,6 +148,8 @@ True     2171
 """
 df = loan_features.copy()
 
+
+#saving the processed dataset with the binary delinquency target
 
 directory = "processed_datasets" 
 os.makedirs(directory, exist_ok=True)

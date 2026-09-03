@@ -26,7 +26,7 @@ y = df['approved']
 X = df.drop(columns=["approved", "action_taken", 'loan_purpose', 'occupancy_type', 'derived_race', 'derived_sex',
        'applicant_age', 'negative_amortization', 'loan_type'
        ])
-X = X.drop(columns=["interest_rate", "rate_spread"])
+X = X.drop(columns=["interest_rate", "rate_spread"])  #dropping these columns to prevent data leakage, as unapproved candidates have no interest rate or rate spread set in the dataset
 
 imputer = SimpleImputer(strategy= "median")
 
@@ -159,7 +159,7 @@ classification report:                precision    recall  f1-score   support
    macro avg       0.68      0.71      0.69     71922
 weighted avg       0.78      0.75      0.76     71922
 
-
+#technique has maintained accuracy but not improved upon like the other models
 """
 
 
@@ -343,6 +343,13 @@ Native Hawaiian or Other Pacific Islander  0.727003            0.474820        0
 White                                      0.770293            0.828927        0.737758             0.428560             0.171073
 Equalised odds difference for race
 0.3948179907294024
+
+"""
+
+"""
+In both case, the group that is targetted (race or age) sees large improvements to equalised odds while the other sees little improvement
+
+
 """
 
 

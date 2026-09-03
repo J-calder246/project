@@ -26,7 +26,7 @@ scaler_fm = joblib.load("models/FMscaler.pkl")
 
 
 
-df = pd.read_csv("modelled_datasets/RF_test_Data.csv")
+df = pd.read_csv("modelled_datasets/RF_approved_applications.csv")
 
 print("df head")
 print(df.head)

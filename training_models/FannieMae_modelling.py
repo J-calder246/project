@@ -20,27 +20,27 @@ print(df.head())
 
 print(df.isna().sum().sort_values(ascending=False))
 
-#drop original list price and used UPB as a stand in for loan amount
+#drop original list price and used UPB as a stand in for loan amount as list price is full of missing values
 df = df.drop(columns=["original list price"])
-#dropping nas (change later if appropriate)
+#dropping nas
 df = df.dropna()
 
 print(df.head())
 
-X = df.drop(columns=['loan id', 'Current Loan Delinquency Status', 'delinquent'])  #list price dropped due to missing values (ammend later if possible)
+X = df.drop(columns=['loan id', 'Current Loan Delinquency Status', 'delinquent'])  
 y = df['delinquent']
 
 print(X.dtypes)
 
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)   #stratify  prevent overfitting and helps ensure that the data is representative and balanced   
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)   #stratify helps ensure that the data is representative and balanced   
 
 #scaling features
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-#inistialising
+#inistialising and fitting model
 
 logreg = LogisticRegression(
     class_weight="balanced",   # handles imbalances
@@ -78,9 +78,16 @@ weighted avg       0.74      0.58      0.62      2132
 
 Accuracy: 0.58
 
-Model performs well on non-delinquent cases but poorly on delinquent ones
+Model performs well on non-delinquent cases but poorly on delinquent ones. Overall though it's pretty bad, likely due to the small number of features
 
 ratio -   4:1 (false-true)
+"""
+
+
+"""
+Training a random forest model aswell
+
+
 """
 
 X_train_RF, X_test_RF, y_train_RF, y_test_RF = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y) #Splitting X and y for an RF test   
@@ -141,11 +148,3 @@ joblib.dump(logreg, "models/FMlogistic.pkl")
 joblib.dump(scaler, "models/FMscaler.pkl")
 
 
-
-
-
-
-
-"""
-Random Forest
-"""

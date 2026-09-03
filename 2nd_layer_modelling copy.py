@@ -22,8 +22,8 @@ model_LR_fm = joblib.load("models/FMlogistic.pkl")
 scaler_fm = joblib.load("models/FMscaler.pkl")
 
 
-
-df = pd.read_csv("modelled_datasets/LR_test_data.csv")
+#gets the applications that were approved so we can predict if any of these will be delinquent 
+df = pd.read_csv("modelled_datasets/approved_application_1st_model_LR.csv")
 
 print("df head")
 print(df.head)

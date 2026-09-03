@@ -38,9 +38,9 @@ print(X.columns.to_list())
 
 
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)    
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)    #stratify ensures that the test and train data have a proportional amount of target results (approved)
 
-test_index = X_test.index   #save X values so they arent messed up when scaled later on
+test_index = X_test.index   #save X values so they arent messed up when scaled later on and we can save this index and use it for the evaluation
 
 
 
@@ -56,7 +56,7 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-#initialising LR model
+#initialising and fitting LR model
 
 logreg = LogisticRegression(max_iter=1000,class_weight="balanced", random_state=42)
 
@@ -185,4 +185,19 @@ output_file_path = os.path.join(directory, "LR_test_data.csv")
 positive_predictions.to_csv(output_file_path, index=False)
 
 
-joblib.dump(scaler, "models/FeatureScaler.pkl")
+joblib.dump(scaler, "models/FeatureScaler.pkl") #saving the scaler for use in the application
+
+
+from sklearn.model_selection import cross_val_score, KFold
+
+num_folds = 5
+KF = KFold(n_splits=num_folds, shuffle=True, random_state=42)
+
+cross_val_results = cross_val_score(logreg, X, y, cv=KF)
+
+
+print("Cross-Validation Results (Accuracy):")
+for i, result in enumerate(cross_val_results, 1):
+    print(f"  Fold {i}: {result * 100:.2f}%")
+    
+print(f'Mean Accuracy: {cross_val_results.mean()* 100:.2f}%')

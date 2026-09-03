@@ -29,7 +29,7 @@ df = pd.read_csv("processed_datasets/NY2019.csv")
 print(df.columns.to_list)
 
 
-#dropping unneeded columns and sensitive columns
+#dropping unneeded columns and sensitive columns for experiementing on results when dropping sensitive columns
 X = df.drop(columns=["approved", "action_taken", "derived_race", "derived_sex", "loan_type", "loan_purpose", 
                      "negative_amortization", "applicant_age", "occupancy_type", 'applicant_age_35-44',
                     'applicant_age_45-54', 'applicant_age_55-64', 'applicant_age_65-74',
@@ -48,7 +48,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 test_index = X_test.index   #save X values so they arent messed up when scaled later on
 
-#standardising features with scaler (gives attributes equal weighting and influence)
 
 #Imputing missing values (change later if this is not suitable)
 
@@ -56,9 +55,9 @@ imputer = SimpleImputer(strategy="median")
 X_train = imputer.fit_transform(X_train)
 X_test = imputer.transform(X_test)
 
-#X_train = X_train.dropna()
-#X_test = X_test.dropna()
 
+
+#standardising features with scaler (gives attributes equal weighting and influence)
 
 scaler = joblib.load("models/FeatureScaler.pkl")  #load scaler from original model
 X_train_scaled = scaler.fit_transform(X_train)
@@ -79,7 +78,7 @@ import joblib
 directory = "mitigated_models" 
 os.makedirs(directory, exist_ok=True)
 
-joblib.dump(logreg, "mitigated_models/removed_sensitive_features.pkl")
+joblib.dump(logreg, "mitigated_models/removed_sensitive_features.pkl")  #saves the model that has been trained on the lower number of features
 
 logreg = joblib.load("mitigated_models/removed_sensitive_features.pkl")
 
@@ -89,8 +88,6 @@ accuracy = accuracy_score(y_test, y_pred)
 print(f"Accuracy: {accuracy:.2f}")
 
 #print reports
-print("Confusion Matrix:")
-print(confusion_matrix(y_test, y_pred))
 
 print("Classification Report:")
 print(classification_report(y_test, y_pred))
@@ -170,22 +167,6 @@ print(equalized_odds_difference(
 ))
 
 """
-Original model
-______________
-metrics frame by Race
-                                           accuracy  selection rate    count
-derived_race                                                                
-2 or more minority races                   0.194175        0.582524    103.0
-American Indian or Alaska Native           0.161290        0.689516    248.0
-Asian                                      0.615758        0.773152   5356.0
-Black or African American                  0.400665        0.642983   5109.0
-Joint                                      0.708989        0.767416    890.0
-Native Hawaiian or Other Pacific Islander  0.116438        0.767123    292.0
-White                                      0.669544        0.756452  46693.0
-Equalised odds difference for race
-0.5110852110852111
-
-
 Results
 _____________
 
@@ -231,21 +212,6 @@ print(equalized_odds_difference(
 ))
 
 """
-Original model
-______________
-
-metrics frame by age
-               accuracy  selection rate    count
-applicant_age                                   
-35-44          0.738452        0.792233  16995.0
-45-54          0.625667        0.737815  17049.0
-55-64          0.568465        0.728677  13788.0
-65-74          0.562900        0.711158   7035.0
-<25            0.867238        0.811563   1401.0
->74            0.455221        0.683038   2423.0
-
-Equalised odds difference for age
-0.48032064284599785
 
 Results
 ________
@@ -263,7 +229,6 @@ Equalised odds difference for age
 0.4256726401437628
 
 
-No large changes to accuracy, selection rate or equalised odds difference
 """
 
 """
@@ -285,6 +250,7 @@ X = X.drop(columns=["interest_rate", "rate_spread"])
 
 print(X.columns.to_list)
 
+#defining the sensitive features that the correlation remover will target
 Sensitive_features = ['derived_race_2 or more minority races',
        'derived_race_American Indian or Alaska Native', 'derived_race_Asian',
        'derived_race_Black or African American', 'derived_race_Joint',
@@ -342,8 +308,8 @@ y_pred = logreg.predict(X_test_scaled)
 #Saving model
 
 
-joblib.dump(CR, "mitigated_models/correlation_remover.pkl")
-joblib.dump(logreg, "mitigated_models/correlation_remover_LR_model.pkl")
+joblib.dump(CR, "mitigated_models/correlation_remover.pkl") #saves the tool that transformed the data
+joblib.dump(logreg, "mitigated_models/correlation_remover_LR_model.pkl")  #save the model trained on the transformed data
 
 
 accuracy = accuracy_score(y_test, y_pred)
@@ -473,4 +439,9 @@ applicant_age
 >74            0.732759        0.613300   2436.0            0.773524             0.337430             0.226476
 Equalised odds difference for age
 0.24962100025073775
+"""
+
+"""
+Correlation remover did moderately well on age but terribly for race
+
 """

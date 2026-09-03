@@ -21,9 +21,6 @@ First some processing
 ______________________
 
 Removing dummy values for clarity
-
-
-
 """
 
 print(df_approved_non_delinquent.columns.to_list)
@@ -67,17 +64,18 @@ print(((df_approved_non_delinquent['derived_race'].value_counts(dropna=False).he
 """
 Results
 
-(advantaged groups starred)
-_______
-Ratio of applications approved by race
+Ratio of applications approved/applications by race
 derived_race
-2 or more minority races                     0.240260
-American Indian or Alaska Native             0.259386
-Asian                                        0.502641
-Black or African American                    0.378475
-Joint                                        0.578904
-Native Hawaiian or Other Pacific Islander    0.198813
-White                                        0.542509
+White                                        0.457438
+Asian                                        0.416667
+Black or African American                    0.223898
+Joint                                        0.510221
+Native Hawaiian or Other Pacific Islander    0.077151
+American Indian or Alaska Native             0.081911
+2 or more minority races                     0.090909
+
+
+Predicting delinquency and using that as a benchmark removes alot of applications
 """
 
 
@@ -98,10 +96,11 @@ print(((df_approved_non_delinquent['derived_sex'].value_counts(dropna=False).hea
 
 """
 Results  (no significant differences)
-
-Joint     0.572911
-Male      0.483540
-Female    0.500058
+Ratio of applications approved/total applications by Gender
+derived_sex
+Joint     0.508030
+Male      0.375642
+Female    0.391324
 """
 """
 Age
@@ -121,14 +120,14 @@ print(((df_approved_non_delinquent['applicant_age'].value_counts(dropna=False).h
 """
 Results
 _______
-
-25-34    0.631987
-35-44    0.550058
-45-54    0.490411
-55-64    0.474644
-65-74    0.457560
-<25      0.589552
->74      0.357553
+applicant_age
+25-34    0.599298
+35-44    0.481417
+45-54    0.381642
+55-64    0.346120
+65-74    0.321692
+<25      0.565129
+>74      0.199507
 """
 
 
@@ -140,10 +139,10 @@ _________________
 reference 
 """
 """
-Disparate imapct
+Disparate imapct (80% rule)
 ________________
 
-Positive outcome% (Non-reference group)/Positive outcome% (reference groups)
+Statistical parity ratio == Positive outcome% (Non-reference group)/Positive outcome% (reference group)
 
 Remember 80% Rule
 
@@ -187,7 +186,7 @@ _______
 
 Ratio for reference group
 
-0.542509
+ 0.457438
 
 """
 
@@ -207,7 +206,7 @@ Ratio_Two_or_more_reference = ((Two_or_more_ratio)/(Ratio_approved_reference))
 print("Ratio of two or more minority races : reference groups")
 print(Ratio_Two_or_more_reference)
 
-#Result    0.442867
+#Result   0.198735
 
 
 #Hawaiian or pacific Islander ratio
@@ -227,7 +226,7 @@ Hawaiian_or_PI_reference = ((Hawaiian_or_PI_ratio)/(Ratio_approved_reference))
 print("Ratio of Hawaiian/Pacific Islander : reference groups")
 print(Hawaiian_or_PI_reference)
 
-# Results from this :   0.366469
+# Results from this :   0.168660
 
 
 #Black or African American ratio
@@ -248,7 +247,7 @@ print("Black or African american : reference groups")
 print(Ratio_Black_reference)
 
 
-# True     0.697637
+# True     0.489461
 
 
 
@@ -269,7 +268,7 @@ Ratio_AI_reference = ((Amerindian_ratio)/(Ratio_approved_reference))
 print("Ratio of American Indian / Alaskan Native : reference groups")
 print(Ratio_AI_reference)
 
-#results from this: 0.478122
+#results from this: 0.179065
 
 #Asian
 
@@ -287,7 +286,7 @@ Ratio_Asian_reference = ((Asian_ratio)/(Ratio_approved_reference))
 print("Ratio of Asian : reference groups")
 print(Ratio_Asian_reference)
 
-# Results: 0.926511
+# Results: 0.910870
 
 #Joint
 Joint_approved = (df_approved_non_delinquent["derived_race"] == "Joint").value_counts(dropna=True)
@@ -305,7 +304,7 @@ Ratio_Joint_reference = ((Joint_ratio)/(Ratio_approved_reference))
 print("Ratio of Joint : reference groups")
 print(Ratio_Joint_reference)
 
-#result: 1.067086
+#result: 1.115388
 
 """
 Age section
@@ -313,11 +312,6 @@ ___________
 
 Evaluating bias between men and women
 
-Results from evaluation of gender's approved  
-
-Joint     0.572911
-Male      0.483540
-Female    0.500058
 
 Will use women as the reference group as they score slightly higher
 """
@@ -358,7 +352,7 @@ Ratio_men_reference = ((men_ratio)/(Ratio_approved_gender_reference))
 print("Ratio of men : reference groups")
 print(Ratio_men_reference)
 
-#Result:   0.966968
+#Result:   0.959924
 #Model is very for applications by gender
 
 
@@ -386,7 +380,7 @@ Ratio_approved_age_reference = ((approved_35_44)/ (applications_35_44))
 print("Ratio for reference groups")
 print(Ratio_approved_age_reference)
 
-#Ratio 35-44:        0.550058
+#Ratio 35-44:        0.565129
 #Strictly for reference
 
 
@@ -406,7 +400,7 @@ Ratio_less_than_25 = ((ratio_25)/(Ratio_approved_age_reference))
 print("Ratio of age group <25 : reference group")
 print(Ratio_less_than_25)
 
-#Result    1.071800
+#Result    1.173887
 
 
 #25 - 34 ratio
@@ -426,7 +420,7 @@ reference_25_34 = ((ratio_25_34)/(Ratio_approved_age_reference))
 print("Ratio of 25-34 : reference groups")
 print(reference_25_34)
 
-# Results from this :   1.148947
+# Results from this :   1.244864
 
 
 #45 - 54 ratio
@@ -447,7 +441,7 @@ print("45-54 : reference groups")
 print(Ratio_45_54_reference)
 
 
-# Results: 0.891563
+# Results: 0.792748
 
 #55-64
 
@@ -464,7 +458,7 @@ Ratio_55_64_reference = ((ratio_55_64)/(Ratio_approved_age_reference))
 print("Ratio of 55 - 64 : reference groups")
 print(Ratio_55_64_reference)
 
-#results from this: 0.862898
+#results from this: 0.718962
 
 #65-74
 
@@ -482,7 +476,7 @@ Ratio_65_74_reference = ((ratio_65_74_ )/(Ratio_approved_age_reference))
 print("Ratio of 65 - 74 : reference groups")
 print(Ratio_65_74_reference)
 
-# Results: 0.831839
+# Results: 0.668219
 
 #over 74
 over_74_approved = (df_approved_non_delinquent["applicant_age"] == ">74").value_counts(dropna=True)
@@ -500,7 +494,7 @@ Ratio_over_74_reference = ((over_74_ratio)/(Ratio_approved_age_reference))
 print("Ratio of over 74 : reference groups")
 print(Ratio_over_74_reference)
 
-#Results: 0.650028
+#Results: 0.414417
 
 
 

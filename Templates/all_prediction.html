@@ -4,31 +4,82 @@
 {% block content %}
 
 
-<h1>Predict application with logistic regression</h1>
+<h1>Predictions of all models</h1>
 
 <input type="submit" value="Predict">
         </form>
 
+
+        <h2>Original LR model</h2>
         {% if prediction_text %}
-            <h3 class="result">{{ prediction_text }}</h3>
-            <h4 class="result">{{ probability_text }}</h4>
-        {% endif %}
-        
-        {% if prediction_XG_text %}
-            <h3 class="result">{{ prediction_XG_text }}</h3>
+            <p class="result">{{ prediction_text }}</p>
             
         {% endif %}
+
+        {% if probability_text %}
+            <p class="result">{{ probability_text }}<p>
+            
+        {% endif %}
+
+
+        <h2>Exponentiated gradient (in-processing)</h2>
+        {% if prediction_XG_text %}
+            <p class="result">{{ prediction_XG_text }}<p>
+            
+        {% endif %}
+
+        <h2>Threshold optimiser targetting race (post-processing)</h2>
 
         {% if prediction_text_TOR %}
-            <h2 class="result">{{ prediction_text_TOR }}</h2>
+            <p class="result">{{ prediction_text_TOR }}<p>
             
         {% endif %}
 
+        <h2>Threshold Optimiser targetting age (post-processing)</h2>
+
         {% if prediction_text_TOA %}
-            <h2 class="result">{{ prediction_text_TOA }}</h2>
+            <p class="result">{{ prediction_text_TOA }}<p>
+            
+        {% endif %}
+
+        
+
+
+        <h2>Prediction without using Sensitive Features (pre-processing)   </h2> 
+        {% if prediction_textNSF %}
+            <p class="result">{{ prediction_textNSF}}<p>
+            
+        {% endif %}
+
+        {% if probability_text_NSF %}
+            <p class="result">{{ probability_text_NSF}}<p>
+            
+        {% endif %}
+
+        <h2>Delinquency Logistic Regression prediction</h2>
+        {% if prediction_LR_text %}
+            <p class="result">{{ prediction_LR_text}}<p>
+            
+        {% endif %}
+
+        {% if probability_LR_text %}
+            <p class="result">{{ probability_LR_text}}<p>
+            
+        {% endif %}
+
+        <h2>Delinquency Random Forest prediction</h2>
+        {% if prediction_text_RF %}
+            <p class="result">{{ prediction_text_RF}}<p>
+            
+        {% endif %}
+
+        {% if probability_text_RF %}
+            <p class="result">{{ probability_text_RF}}<p>
             
         {% endif %}
 
 
 
 {% endblock %}
+
+         
