@@ -11,8 +11,7 @@ Datasets/2024Q1.csv
 raw_datasets/
 Datasets/2024Q1.csv
 
-#models
-mitigated_models/exponentiated_gradient_LR.pkl
+
 
 #MongoDB information
 config.py

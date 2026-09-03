@@ -83,7 +83,7 @@ class FlaskTests(unittest.TestCase):
             follow_redirects=True
             )
         self.assertEqual(
-        response_missing.status_code, [200, 400])
+        response_missing.status_code, 200)
 
     def test_valid_input(self):
         response_valid = self.client.post(
