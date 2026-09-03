@@ -1,12 +1,3 @@
-from sklearn.model_selection import train_test_split
-from sklearn.model_selection import KFold
-from sklearn.model_selection import cross_val_score
-from numpy import mean
-from numpy import absolute
-from numpy import sqrt
-import pandas as pd
-import joblib
-
 
 """
 _______________________________
@@ -107,6 +98,7 @@ class FlaskTests(unittest.TestCase):
                     },
             follow_redirects=True
                     )
+                    
         self.assertIn(response_valid.status_code, [200, 400])
         
 

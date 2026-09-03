@@ -16,6 +16,14 @@ Run processing, evaluation, modelling and mitigation sections to see all results
 To run app - run "run_app.py" where you can enter data for testing the models that have been deployed on the app.
 Note: some models trained and used are too large and cumbersome to be deployed onto the app
 
+_________________________
+IMPORTANT NOTE
+______________________-
+to ensure the app runs correctly I would HIGHLY recommend running all the python files before the app as some of the large files may NOT be included in the ZIP file.
+To help it all launch correctly, run processing file to load the processed datasets and the baseline models in the training_models before checking the evaluation and mitigation models to ensure that sclaer, models and datasets are correctly loaded. 
+If the ZIP file fails check the github  repo link here: https://github.com/J-calder246/project 
+
+
 
 A good way to see the bias of the baseline model is to run the basic LR test of id 6a99ce6039435a5d29f6c8ec  (the first application on the list) a white application
 and then run it for 6a99cea639435a5d29f6c8ee (2nd on the list) a native american application. Despite both having the same financial metrics, the LR model will approve the first but reject the second while the models with mitigation techniques will approve both and the delinquency models will mark neither as delinquent.
