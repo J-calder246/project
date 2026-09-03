@@ -16,21 +16,21 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>loan_type</th>
-                <th>loan_amount</th>
+                <th>loan type</th>
+                <th>loan amount</th>
                 <th>income</th>
-                <th>debt_to_income_ratio</th>
-                <th>loan_to_value_ratio</th>
-                <th>interest_rate</th>
-                <th>property_value</th>
-                <th>loan_term</th>
-                <th>loan_purpose</th>
-                <th>occupancy_type</th>
+                <th>debt to income ratio</th>
+                <th>loan to value ratio</th>
+                <th>interest rate</th>
+                <th>property value</th>
+                <th>loan term</th>
+                <th>loan purpose</th>
+                <th>occupancy type</th>
                 <th>race</th>
                 <th>Gender</th>
                 <th>Age band</th>
                 <th>negative amorization</th>
-                <th>rate_spread</th>
+                <th>rate spread</th>
                 <th>predict application</th>
                 <th>Delete Application</th>
             </tr>
@@ -73,9 +73,9 @@
 
                 <form class="inline" method="POST"  action="{{ url_for('delete', select_id=row['_id']) }}" onsubmit="return confirm('Delete this record?');">
                     <input class="button" type="submit" value="Delete">
-                </td>
-                    
                 </form>
+                </td>
+                
 
                 
                 

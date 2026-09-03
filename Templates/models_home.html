@@ -46,46 +46,41 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>loan_type</th>
-                <th>loan_amount</th>
+                <th>loan type</th>
+                <th>loan amount</th>
                 <th>income</th>
-                <th>debt_to_income_ratio</th>
-                <th>loan_to_value_ratio</th>
-                <th>interest_rate</th>
-                <th>property_value</th>
-                <th>interest_rate</th>
-                <th>property_value</th>
-                <th>loan_term</th>
-                <th>loan_type</th>
-                <th>loan_purpose</th>
-                <th>occupancy_type</th>
+                <th>debt to income ratio</th>
+                <th>loan to value ratio</th>
+                <th>interest rate</th>
+                <th>property value</th>
+                <th>loan term</th>
+                <th>loan purpose</th>
+                <th>occupancy type</th>
                 <th>race</th>
                 <th>Gender</th>
                 <th>Age band</th>
                 <th>negative amorization</th>
-                <th>rate_spread</th>
+                <th>rate spread</th>
             </tr>
-        </thead>
-        <tbody>
-        {% for row in records %}
-        <tr>
-            <td>{{ row.get('ID','') }}</td>
-            <td>{{ row.get('loan_type','') }}</td>
-            <td>{{ row.get('loan_amount','')}}</td>
-            <td>{{ row.get('income','')}}</td>
-            <td>{{ row.get('debt_to_income_ratio','')}}</td>
-            <td >{{ row.get('interest_rate','')}}</td>
-            <td >{{ row.get('property_value','')}}</td>
-            <td >{{ row.get('loan_term','')}}</td>
-            <td >{{ row.get('loan_purpose','')}}</td>
-            <td >{{ row.get('occupancy_type','')}}</td>
-            <td >{{ row.get('derived_race','')}}</td>
-            <td >{{ row.get('derived_sex','')}}</td>
-            <td >{{ row.get('applicant_age','')}}</td>
-            <td >{{ row.get('negative_amortization','')}}</td>
-            <td >{{ row.get('rate_spread','')}}</td>
-        </tr>
-        {% endfor %}
+        
+            <tr>
+                <td>{{ applicant_data.applicant_id }}</td>
+                <td>{{ applicant_data.loan_type }}</td>
+                <td>{{ applicant_data.loan_amount }}</td>
+                <td>{{ applicant_data.income }}</td>
+                <td>{{ applicant_data.debt_to_income_ratio }}</td>
+                <td>{{ applicant_data.loan_to_value_ratio }}</td>
+                <td >{{ applicant_data.interest_rate }}</td>
+                <td >{{ applicant_data.property_value }}</td>
+                <td >{{ applicant_data.loan_term }}</td>
+                <td >{{ applicant_data.loan_purpose }}</td>
+                <td >{{ applicant_data.occupancy_type }}</td>
+                <td >{{ applicant_data.derived_race }}</td>
+                <td >{{ applicant_data.derived_sex }}</td>
+                <td >{{ applicant_data.applicant_age }}</td>
+                <td >{{ applicant_data.negative_amortization }}</td>
+                <td >{{ applicant_data.rate_spread }}</td>
+            </tr>
 
   
 {% endblock %}

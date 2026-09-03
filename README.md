@@ -1,5 +1,24 @@
 # project
 Mortgage and bias repo
+---------------------------------
+
+Datasets
+-------------
+
+HMDA applications dataset: https://ffiec.cfpb.gov/data-browser/data/2025?category=states
+
+Fannie Mae delinquency dataset:   https://datadynamics.fanniemae.com/data-dynamics/#/downloadLoanData/Single-Family 
+
+
+To run
+install requirements from requirements.txt    (run pip install -r requirements.txt)
+Run processing, evaluation, modelling and mitigation sections to see all results of the experiments and the metrics found
+To run app - run "run_app.py" where you can enter data for testing the models that have been deployed on the app.
+Note: some models trained and used are too large and cumbersome to be deployed onto the app
+
+
+
+
 
 Introduction
 

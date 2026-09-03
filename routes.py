@@ -28,9 +28,6 @@ app.secret_key = 'my_secret_key'
 def home():
     return render_template('Home.html')
 
-@app.route("/models_home")
-def models_home():
-     return render_template("models_home.html")
 
 @app.route("/datalist")
 def datalist():
@@ -61,6 +58,8 @@ def input_data_post():
         negative_amortization = request.form.get("negative_amortization")
         rate_spread = request.form.get("rate_spread")
 
+        
+        
         insert_data = {
             "loan_type": (loan_type),
             "loan_amount": (loan_amount),
@@ -76,27 +75,28 @@ def input_data_post():
             "applicant_age": (applicant_age),
             "negative_amortization": ((negative_amortization)),
             "rate_spread": (rate_spread)
-                    }
+                    } 
 
-                    #Ensures that there are no null values in the input data
-
+            #validate that all fields have been filled in
+            
         for field_name, value in insert_data.items():
-             if insert_data[field_name] is None or insert_data[field_name] == "":
-                  flash("data is required for all fields", "danger")
-                  return redirect(url_for("input_data"))
+                             if insert_data[field_name] is None or insert_data[field_name] == "":
+                                  flash("data is required for all fields", "danger")
+                                  return redirect(url_for("input_data"))
+               
 
 
         #ensures reobustness against invalid, negative inputs that the models cannot process
-        if loan_amount < 0:
+        if loan_amount <= 0:
              flash("value cannot be negative", "danger")
              return redirect(url_for("input_data"))
         if income < 0:
                      flash("value cannot be negative", "danger")
                      return redirect(url_for("input_data"))
-        if property_value < 0:
+        if property_value <= 0:
                      flash("value cannot be negative", "danger")
                      return redirect(url_for("input_data"))
-        if loan_term < 0:
+        if loan_term <= 0:
                      flash("value cannot be negative", "danger")
                      return redirect(url_for("input_data"))
         
@@ -144,6 +144,7 @@ def delete(select_id):
 
 
 
+
 #Route to select a specific id from the datalist
 @app.route("/select_id", methods=['POST'])
 def select_id():
@@ -166,6 +167,14 @@ def selected_application():
 
     return render_template("selected_application.html", applicant_data = applicant_data)
 
+@app.route("/models_home")
+def models_home():
+     selected_id = session.get("selected_application")
+     print("selected ID:", selected_id)
+                 
+     applicant_data = input_collection.find_one({"_id": ObjectId(selected_id)})  #finds data according to application
+                
+     return render_template("models_home.html", applicant_data=applicant_data)
 
 
 
@@ -283,7 +292,7 @@ def process_data(applicant_data):
              'Home purchase': '1',
              'Home improvement': '2',
              'refinancing': '31',
-             'Cash-out refinancing': '32',
+             'cash-out refinancing': '32',
              'other purpose': '4',
              'Not applicable': '5'
         }
@@ -348,6 +357,10 @@ def process_data(applicant_data):
         
     cols_to_encode = ["derived_race", "derived_sex", "loan_type", "loan_purpose", "negative_amortization",
                             "applicant_age", "occupancy_type"]
+
+    #in the original data income in measured in thousands so we have to reduce it here
+
+    df["income"] = ((df["income"])/1000)
     
     #combining the dummies with the original data like in the original processing file so we can use these features later (we need this more some mitigation tehcniques)
     dummies = pd.DataFrame(pd.get_dummies(df, columns=cols_to_encode, drop_first=False))
@@ -363,6 +376,7 @@ def process_data(applicant_data):
     print(df.columns.to_list)
 
     df = pd.DataFrame(df)
+    
 
 
        
@@ -401,15 +415,18 @@ def logistic():
     df = process_data(applicant_data)
 
     X = pd.DataFrame(df)
-
-    print(X.values)
-
+    X = (X.drop(columns=cols_to_encode))
     X = X.drop(columns=["interest_rate", "rate_spread"])
-    X = X.drop(columns=cols_to_encode)
+    
 
+    print(X.dtypes)   
+        
+    
 #scales X according to the original data
     X = scaler.transform(X)
     X = pd.DataFrame(X)
+
+    
 
 
     prediction = model_LR_1st.predict(X)[0]
@@ -418,6 +435,14 @@ def logistic():
     else:
         prediction = "denied"
     probability = model_LR_1st.predict_proba(X)[0, 1]
+
+    print(model_LR_1st.classes_)
+    print(model_LR_1st.n_features_in_)
+    print(prediction)
+    print(probability)
+
+   
+    
     return render_template("logistic.html", prediction_text= f"model prediction: {prediction}",
                            probability_text=f"prediction probability: {probability}")
 
@@ -708,32 +733,21 @@ def delinquency():
 
      print(X.head())
 
-     
-
-
-     #loading model and original scaler
-
-     model_LR_fm = joblib.load("models/FMlogistic.pkl")  # original fannie mae model for delinquency.
-     scaler_fm = joblib.load("models/FMscaler.pkl")
+     #loading delinquency model (RF was best)
      model_fm_RF = joblib.load("models/Fannie_mae_RF.pkl")  # original fannie mae model for delinquency.
 
      X = np.reshape(X, (1, 5))
 
-     X_LR = scaler_fm.transform(X)  #RF does not need to be scaled and wasn't in the original file, so we only scale the LR one
-
-     
-     
-     
-     prediction_delinquency_LR = model_LR_fm.predict(X_LR)[0]
-     probability_delinquency_LR = model_LR_fm.predict_proba(X_LR)[:, 1]
-
-     
-     
      prediction_delinquency_RF = model_fm_RF.predict(X)[0]
      probability_delinquency_RF = model_fm_RF.predict_proba(X)[:, 1]
+     if prediction_delinquency_RF == True:
+           prediction_delinquency_RF = "Delinquent"
+     else:
+           prediction_delinquency_RF = "Not Likely to be delinquent"
+     
+     
     
-     return render_template("delinquency.html", prediction_LR_text= f"model prediction: {prediction_delinquency_LR}",
-                                    probability_LR_text= f"prediction probability: {probability_delinquency_LR}", 
+     return render_template("delinquency.html",
                                     prediction_text_RF= f"model prediction: {prediction_delinquency_RF}",
                                          probability_text_RF= f"prediction probability: {probability_delinquency_RF}")
 
@@ -819,10 +833,6 @@ def all_predictions():
 
     X_NSF = scaler_NSF.transform(X_NSF)  #scaling the X with no sensitive features seperately
 
-
-
-
-    
     prediction_no_sensitive_features = no_sensitive_features.predict(X_NSF)[0]
     probability_no_sensitive_features = no_sensitive_features.predict_proba(X_NSF)[0, 1]
     if prediction_no_sensitive_features == 1:
@@ -830,34 +840,23 @@ def all_predictions():
     else:
             prediction_no_sensitive_features = "denied"
 
-
-
-
-
-
     #Delinquency
     X_FM = process_FM(applicant_data)
 
     X_FM = np.reshape(X_FM, (1, 5))
 
+    X_RF = X_FM   
 
-    X_FM = scaler_fm.transform(X_FM)
 
-     
-     
-    prediction_delinquency_LR = model_LR_fm.predict(X_FM)[0]
-    probability_delinquency_LR = model_LR_fm.predict_proba(X_FM)[:, 1]
-    if prediction_age == 1:
-            prediction_age = "approved"
-    else:
-            prediction_age = "denied"
+
  
-    prediction_delinquency_RF = model_fm_RF.predict(X_FM)[0]
-    probability_delinquency_RF = model_fm_RF.predict_proba(X_FM)[:, 1]
-    if prediction_age == 1:
-            prediction_age = "approved"
+    prediction_delinquency_RF = model_fm_RF.predict(X_RF)[0]
+    probability_delinquency_RF = model_fm_RF.predict_proba(X_RF)[:, 1]
+    if prediction_delinquency_RF == True:
+               prediction_delinquency_RF = "Delinquent"
     else:
-            prediction_age = "denied"
+               prediction_delinquency_RF = "Not Likely to be delinquent"
+         
     
 
     
@@ -867,8 +866,7 @@ def all_predictions():
                            probability_text=f"prediction probability: {probability}", 
                                prediction_textNSF=f"model prediction: {prediction_no_sensitive_features}",
                                probability_text_NSF=f"prediction probability: {probability_no_sensitive_features}",prediction_XG_text=f"model prediction: {prediction_exponentiated_gradient}", 
-                               prediction_LR_text= f"model prediction: {prediction_delinquency_LR}",
-                                    probability_LR_text= f"prediction probability: {probability_delinquency_LR}", prediction_text_TOR=f"model prediction: {prediction_race}",
+                               prediction_text_TOR=f"model prediction: {prediction_race}",
                                prediction_text_TOA=f"model prediction: {prediction_age}", prediction_text_RF=f"model prediction: {prediction_delinquency_RF}",
                                probability_text_RF=f"model prediction: {probability_delinquency_RF}"
                                     )

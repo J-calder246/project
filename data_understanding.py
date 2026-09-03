@@ -49,4 +49,6 @@ sns.heatmap(correlation, annot=True, cmap="coolwarm", fmt=".2f", linewidths=0.5)
 plt.title("heatmap")
 plt.show()
 
+print(df["loan_purpose"].value_counts(dropna=False).head(20))
+
 

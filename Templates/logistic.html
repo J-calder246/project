@@ -6,12 +6,11 @@
 
 <h1>Predict application with logistic regression</h1>
 
-<input type="submit" value="Predict">
-        </form>
+
 
         {% if prediction_text %}
             <h3 class="result">{{ prediction_text }}</h3>
-            <h4 class="result">{{ probability_text }}</h4>
+            <h3 class="result">{{ probability_text }}</h3>
         {% endif %}
 
         
