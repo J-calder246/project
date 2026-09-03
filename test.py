@@ -112,6 +112,4 @@ class FlaskTests(unittest.TestCase):
 
 unittest.main(argv=[''], verbosity=2, exit=False)
 
-model_LR_1st = joblib.load("models/logistic.pkl")   #original logistic regression model for applications.
 
-df = pd.read_csv("processed_datasets/NY2019.csv")
