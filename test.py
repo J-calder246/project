@@ -90,11 +90,11 @@ class FlaskTests(unittest.TestCase):
             '/input_data',
             data= {
                             'loan_type': '1',
-                            'loan_amount': '535000.0',  # invalid loan amount
-                            'income': '42000.0',
+                            'loan_amount': '535000',  # invalid loan amount
+                            'income': '42000',
                             'debt_to_income_ratio': '<20%',
                             'interest_rate': '5.4',
-                            'property_value': '840500.0',
+                            'property_value': '840500',
                             'loan_term': '180',
                             'loan_purpose': '1',
                              'occupancy_type': 'Principal residence',	
@@ -107,8 +107,7 @@ class FlaskTests(unittest.TestCase):
                     },
             follow_redirects=True
                     )
-        self.assertIn(
-        response_valid.status_code, [200, 400])
+        self.assertIn(response_valid.status_code, [200, 400])
         
 
 
