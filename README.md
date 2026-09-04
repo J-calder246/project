@@ -22,9 +22,11 @@ ______________________-
 to ensure the app runs correctly I would HIGHLY recommend running all the python files before the app as some of the large files may NOT be included in the ZIP file.
 To help it all launch correctly, run processing file to load the processed datasets and the baseline models in the training_models before checking the evaluation and mitigation models to ensure that sclaer, models and datasets are correctly loaded. 
 If the ZIP file fails check the github  repo link here: https://github.com/J-calder246/project 
-If the raw datasets aren't loaded onto the zip:
-                delinquency raw dataset: 
+If the raw datasets aren't loaded onto the zip there are links to them here:
+                delinquency raw dataset:  https://leedstrinity-my.sharepoint.com/:x:/r/personal/2511607_leedstrinity_ac_uk/Documents/2019,%20NY%20fianl%20(1).xls.xlsx?d=w460e1879f0bc4b8594d1604bc086d063&csf=1&web=1&e=TuyuSG 
 
+                approval raw dataset: https://1drv.ms/x/c/c61704fd522c4eab/IQC4S63iazOnRJUI2Lg_bbjLAekA4Y23_lhIcOo8Z2c2hkA?e=R5h7vH 
+Other dataset will be produced by the code but these two are foreign to the github page.
 
 
 
