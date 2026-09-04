@@ -2,7 +2,7 @@
 Mortgage and bias repo
 ---------------------------------
 
-Datasets
+Dataset sources
 -------------
 
 HMDA applications dataset: https://ffiec.cfpb.gov/data-browser/data/2025?category=states
@@ -22,6 +22,9 @@ ______________________-
 to ensure the app runs correctly I would HIGHLY recommend running all the python files before the app as some of the large files may NOT be included in the ZIP file.
 To help it all launch correctly, run processing file to load the processed datasets and the baseline models in the training_models before checking the evaluation and mitigation models to ensure that sclaer, models and datasets are correctly loaded. 
 If the ZIP file fails check the github  repo link here: https://github.com/J-calder246/project 
+If the raw datasets aren't loaded onto the zip:
+                delinquency raw dataset: 
+
 
 
 
