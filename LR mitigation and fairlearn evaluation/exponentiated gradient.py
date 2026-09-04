@@ -9,7 +9,7 @@ from sklearn.impute import SimpleImputer
 import pandas as pd
 from fairlearn.metrics import MetricFrame, count, equalized_odds_difference, equalized_odds_ratio,  false_negative_rate, false_positive_rate, selection_rate,true_positive_rate
 
-from sklearn.metrics import accuracy_score  #accuracy score for original model
+from sklearn.metrics import accuracy_score 
 
 
 df_modelling = pd.read_csv("processed_datasets/NY2019.csv")
